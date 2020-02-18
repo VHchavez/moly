@@ -3,14 +3,14 @@
 Creates main figure 
 
 """
-import sys
-sys.path.append("..")
+#import sys
+#sys.path.append("..")
 
 import plotly.graph_objects as go
-from molecule.adapters import molecule_factory
-from layers.bonds import get_bond_mesh
-from layers.geometry import get_sphere_mesh
-from layers.blob import get_blob
+#from .molecule.adapters import molecule_factory
+from ..layers.bonds import get_bond_mesh
+from ..layers.geometry import get_sphere_mesh
+from ..layers.blob import get_blob
 from .layouts import get_layout
 
 def plot(molecule, surface="matte"):

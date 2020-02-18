@@ -2,8 +2,8 @@ import sys
 sys.path.append("..")
 
 import plotly.graph_objects as go
-from figure.colors import *
-from figure.layouts import *
+from ..figure.colors import *
+from ..figure.layouts import *
 
 ambient   = 0.65
 diffuse   = 0.35
