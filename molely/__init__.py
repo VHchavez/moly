@@ -4,7 +4,7 @@ A short description of the project.
 """
 
 # Add imports here
-from .figure import *
+from .figure.figure import *
 from .molecule.molecule_factory import molecule_factory
 
 # Handle versioneer
