@@ -43,7 +43,7 @@ class Figure():
         #     mesh = get_sphere_mesh(self.molecule.spheres[atom], self.molecule.symbols[atom], xyz, self.surface)
         #     self.fig.add_trace(mesh)
 
-    def add_blob(self, index=0, iso=0.001, color="Portland_r", opacity=0.2):
+    def add_blob(self, index=0, iso=0.01, color="Portland", opacity=0.2):
         volume = get_blob(self.molecules[index], iso, opacity, color)
         self.fig.add_trace(volume)
 
