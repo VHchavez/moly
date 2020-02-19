@@ -6,6 +6,7 @@ dependencies:
   - pip
   - numpy
   - plotly
+  - qcelemental
 
     # Testing
   - pytest
