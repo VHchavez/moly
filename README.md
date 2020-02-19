@@ -1,9 +1,27 @@
-molely
-==============================
+<center> moly </center>
+
+
+<p align="center">
+<br>
+<!--
+<img src="docs/media/logo_vertical.png" alt="Blobs" height=300> <br><br>
+-->
+<a href="https://travis-ci.com/VHChavez/molely"><img src="https://travis-ci.com/VHChavez/molely.svg?branch=master" /></a>  
+<a href="https://lgtm.com/projects/g/VHchavez/molely/context:python"><img src="https://img.shields.io/lgtm/grade/python/g/VHchavez/molely.svg?logo=lgtm&logoWidth=18" /></a>  
+<a href="https://opensource.org/licenses/BSD-3-Clause"><img src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" /></a>
+<br>
+</p>
+
+
+
+
+
 [//]: # (Badges)
-[![Travis Build Status](https://travis-ci.com/REPLACE_WITH_OWNER_ACCOUNT/molely.svg?branch=master)](https://travis-ci.com/REPLACE_WITH_OWNER_ACCOUNT/molely)
-[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/REPLACE_WITH_APPVEYOR_LINK/branch/master?svg=true)](https://ci.appveyor.com/project/REPLACE_WITH_OWNER_ACCOUNT/molely/branch/master)
+
+<!---
 [![codecov](https://codecov.io/gh/REPLACE_WITH_OWNER_ACCOUNT/molely/branch/master/graph/badge.svg)](https://codecov.io/gh/REPLACE_WITH_OWNER_ACCOUNT/molely/branch/master)
+-->
+
 
 A short description of the project.
 

@@ -18,7 +18,11 @@ matrix:
       env: PYTHON_VER=3.6
     - os: linux
       language: generic
+<<<<<<< HEAD
       env: PYTHON_VER=3.7
+=======
+      env: PYTHON_VER=3.8
+>>>>>>> 9559b348cac23a53be8907911ecb34782c2a9575
 
 
 before_install:
