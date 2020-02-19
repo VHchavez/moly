@@ -119,7 +119,6 @@ class cubeMolecule(MoleculeAdapter):
 
         return symbols, atomic_numbers
 
-        return
 
     def get_connectivity(self):
         return qcel.molutil.guess_connectivity(self.symbols, self.geometry)

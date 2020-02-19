@@ -8,7 +8,6 @@ def get_blob(molecule, iso, opacity, color):
     y_r = y * molecule.spacing[1] + molecule.origin[1]
     z_r = z * molecule.spacing[2] + molecule.origin[2]
 
-
     mesh = go.Isosurface(x = x_r.flatten(),
                          y = y_r.flatten(), 
                          z = z_r.flatten(), 

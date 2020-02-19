@@ -54,7 +54,7 @@ class Figure():
         self.molecules.append(molecule)
         self.fig.update_layout(get_layout(molecule.geometry, self.resolution))
 
-    def add_layer(trace):
+    def add_layer(self, trace):
         self.fig.add_trace(trace)
 
 

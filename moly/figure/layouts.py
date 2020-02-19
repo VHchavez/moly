@@ -43,7 +43,7 @@ def get_layout(geometry, resolution):
         }
     }
 
-    if not resolution == None:
+    if resolution is not None:
         layout["height"] = resolution[0]
         layout["width"] = resolution[1]
 

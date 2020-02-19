@@ -30,7 +30,7 @@ def get_bonds_cilinders(geometry, bonds, radius=0.3, resolution=60):
         vec2 = geometry[idx2]
         length = np.linalg.norm(vec2 - vec1)
         
-        mid = (vec1 + vec2)/2
+        #mid = (vec1 + vec2)/2
         #r   = 0.3
         #resolution = 50 #n-1 sides
         
@@ -42,7 +42,7 @@ def get_bonds_cilinders(geometry, bonds, radius=0.3, resolution=60):
         for bond in range(2):
         
             #Extend circle in z
-            z = np.linspace(-length/2 + (length/2)*bond,  length/2 - (length/2)*(1-bond)  , 2)           
+            #z = np.linspace(-length/2 + (length/2)*bond,  length/2 - (length/2)*(1-bond)  , 2)           
             data = []
             if bond == 0:
                 for z in np.linspace(0, length/2, 2):
