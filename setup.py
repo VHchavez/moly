@@ -46,7 +46,9 @@ setup(
 
     # Additional entries you may want simply uncomment the lines you want and fill in the data
     # url='http://www.my_package.com',  # Website
-    install_requires=["numpy", "qcelemental", "plotly"],  # Required packages, pulls from pip if needed; do not use for Conda deployment
+    install_requires=["numpy",
+                      "qcelemental",
+                      "plotly>=4.0.0"],  # Required packages, pulls from pip if needed; do not use for Conda deployment
     # platforms=['Linux',
     #            'Mac OS-X',
     #            'Unix',
