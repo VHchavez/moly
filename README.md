@@ -11,7 +11,7 @@ Molecular visualization in Jupyter.<br><br>
 ---
 
 <br>
-(Package is still under development!)
+(Package is under development!)
 
 
 ### Features:  
