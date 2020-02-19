@@ -32,7 +32,6 @@ Cube files
     git clone https://github.com/VHchavez/moly.git
     cd moly
     pip install .
-    #Be sure to use if release is several commits behind
      ```
 * pip:
     ```
