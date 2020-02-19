@@ -46,7 +46,7 @@ install:
 
 
 script:
-  - pytest -v --cov=molely molely/tests/
+  - pytest -v --cov=moly moly/tests/
 
 notifications:
     email: false

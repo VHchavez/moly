@@ -1,12 +1,12 @@
 """
-Unit and regression test for the molely package.
+Unit and regression test for the moly package.
 """
 
 # Import package, test suite, and other packages as needed
-import molely
+import moly
 import pytest
 import sys
 
-def test_molely_imported():
+def test_moly_imported():
     """Sample test, will always pass so long as import statement worked"""
-    assert "molely" in sys.modules
+    assert "moly" in sys.modules

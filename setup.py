@@ -1,5 +1,5 @@
 """
-molely
+moly
 A short description of the project.
 """
 import sys
@@ -21,7 +21,7 @@ except:
 
 setup(
     # Self-descriptive entries which should always be present
-    name='molely',
+    name='moly',
     author='VH Chavez',
     author_email='gonza445@purdue.edu',
     description=short_description[0],

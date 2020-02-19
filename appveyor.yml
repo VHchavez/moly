@@ -38,7 +38,7 @@ install:
 build: false
 
 test_script:
-  - pytest -v --cov=molely molely\\tests
+  - pytest -v --cov=moly moly\\tests
 
 on_success:
   - codecov

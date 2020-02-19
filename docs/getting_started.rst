@@ -1,4 +1,4 @@
 Getting Started
 ===============
 
-This page details how to get started with molely. 
+This page details how to get started with moly. 
