@@ -38,7 +38,7 @@ Cube files
 
  
 * ### Basic Geometry
-*Define a figure and add elements to it. These can be molecues:*
+*Define a figure and add molecules to it.
  
  ```
  import moly
