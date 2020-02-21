@@ -19,7 +19,23 @@ def rotation_matrix(vec1, vec2):
     rotation_matrix = np.eye(3) + kmat + kmat.dot(kmat) * ((1 - c) / (s ** 2))
     return rotation_matrix
 
-def get_bonds_cilinders(geometry, bonds, radius=0.3, resolution=60):
+
+def get_single_cylinder(radius=0.3, points=60):
+    phi = np.linspace(0, 2*np.pi, points)
+    x   = radius * np.cos(phi)
+    y   = radius * np.sin(phi)
+    z = np.array([0, 1])
+    
+    data = []
+    for z in np.linspace(0, 1, 2):
+        z = np.ones(points) * z
+        data.extend(np.vstack([x,y,z]).T)
+    data = np.vstack(data)
+    
+    return data
+
+
+def get_bonds_cylinders(geometry, bonds, radius=0.3, points=60):
     
     cilinder_a = []
     cilinder_b = []
@@ -69,10 +85,10 @@ def get_bonds_cilinders(geometry, bonds, radius=0.3, resolution=60):
     return [cilinder_a, cilinder_b]
 
 
-def get_sphere(r=3.0, resolution=30):
+def get_sphere(r=1.0, points=20):
 
-    phi   = np.linspace(0,        2*np.pi, resolution)
-    theta = np.linspace(-np.pi/2, np.pi/2, resolution)
+    phi   = np.linspace(0,        2*np.pi, 2*points)
+    theta = np.linspace(-np.pi/2, np.pi/2, points)
 
     #Mesh of sphere
     phi, theta = np.meshgrid(phi[1:], theta)

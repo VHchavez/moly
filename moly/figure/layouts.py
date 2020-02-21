@@ -21,7 +21,7 @@ def get_axis(geometry, axis):
     return axis
 
 
-def get_layout(geometry, resolution):
+def get_layout(geometry, figsize):
     layout = {
         "scene_aspectmode": "manual",
         "scene_aspectratio": {
@@ -43,9 +43,9 @@ def get_layout(geometry, resolution):
         }
     }
 
-    if resolution is not None:
-        layout["height"] = resolution[0]
-        layout["width"] = resolution[1]
+    if figsize is not None:
+        layout["height"] = figsize[0]
+        layout["width"] = figsize[1]
 
     return layout
 

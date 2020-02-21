@@ -3,8 +3,7 @@ import plotly.graph_objects as go
 from ..figure.colors import *
 from ..figure.layouts import *
 
-
-def get_sphere_mesh(sphere,sym, xyz, surface):
+def get_sphere_mesh(sphere, sym, xyz, surface):
 
     lightning = surface_materials[surface]
 
@@ -24,3 +23,5 @@ def get_sphere_mesh(sphere,sym, xyz, surface):
     })
 
     return mesh
+
+

@@ -15,8 +15,6 @@ class QCMolecule(MoleculeAdapter):
         self.atomic_numbers = self.dict["atomic_numbers"]
         self.geometry = self.get_geometry()
         self.bonds    = self.get_connectivity()
-        self.cilinders = get_bonds_cilinders(self.geometry, self.bonds)
-        self.spheres   = get_atoms_spheres(self.geometry, self.atomic_numbers)
 
     def get_geometry(self):
         return self.molecule.geometry
@@ -44,9 +42,6 @@ class Psi4Molecule(MoleculeAdapter):
         self.atomic_numbers = self.dict["atomic_numbers"]
         self.geometry = self.get_geometry()
         self.bonds    = self.get_connectivity()
-        self.cilinders = get_bonds_cilinders(self.geometry, self.bonds)
-        self.spheres   = get_atoms_spheres(self.geometry, self.atomic_numbers)
-
 
     def get_geometry(self):
         return self.molecule.geometry
@@ -67,8 +62,6 @@ class xyzMolecule(MoleculeAdapter):
         self.symbols  = self.get_symbols()
         self.bonds    = self.get_connectivity()
         self.atomic_numbers = self.dict["atomic_numbers"]
-        self.cilinders = get_bonds_cilinders(self.geometry, self.bonds)
-        self.spheres   = get_atoms_spheres(self.geometry, self.atomic_numbers)
         
     def get_geometry(self):
         return self.molecule.geometry
@@ -92,18 +85,10 @@ class cubeMolecule(MoleculeAdapter):
         self.geometry = self.get_geometry()
         self.symbols, self.atomic_numbers = self.get_symbols()
         self.bonds = self.get_connectivity()
-        self.cilinders = get_bonds_cilinders(self.geometry, self.bonds)
-        self.spheres   = get_atoms_spheres(self.geometry, self.atomic_numbers, cube=False)
 
     def get_geometry(self):
         geometry = []
         for atom in self.details['atoms']:
-            # atom[1][1] = (atom[1][1] - self.origin[0]) / self.spacing[0]
-            # atom[1][2] = (atom[1][2] - self.origin[1]) / self.spacing[1]
-            # atom[1][3] = (atom[1][3] - self.origin[2]) / self.spacing[2]
-#            atom[1][1] = (atom[1][1]) / self.spacing[0]
-#            atom[1][2] = (atom[1][2]) / self.spacing[1]
-#            atom[1][3] = (atom[1][3]) / self.spacing[2]
             geometry.append(atom[1][1:])
         geometry = np.array(geometry)
         return geometry
@@ -118,7 +103,6 @@ class cubeMolecule(MoleculeAdapter):
         atomic_numbers = np.array(atomic_numbers)
 
         return symbols, atomic_numbers
-
 
     def get_connectivity(self):
         return qcel.molutil.guess_connectivity(self.symbols, self.geometry)
