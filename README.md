@@ -50,9 +50,8 @@ Cube files
  
  ```
  import moly
- caffeine = moly.molecule_factory("xyz", file='/caffeine.xyz')
  fig = moly.Figure()
- fig.add_molecule(caffeine)
+ fig.add_molecule("xyz", file='/caffeine.xyz')
  fig.show()
  ```
  
@@ -64,9 +63,8 @@ Cube files
 * ### Basic Cube file 
 *Geometry and volumentric information can extracted from cube files.*
  ```
-formal = moly.molecule_factory("Cube", file='orbitals.cube')
 fig = moly.Figure()
-fig.add_molecule(formal)
+fig.add_molecule("Cube", file='orbitals.cube')
 fig.add_blob(iso=0.05)
 fig.show()
  ```
@@ -87,14 +85,11 @@ ds = client.get_collection("ReactionDataset", "S22")
 dimers = ds.get_molecules()
 ammonia_dimer = dimers.loc['Ammonia Dimer', 'molecule'][0]
 
-#Molecules
-ammonia_dimer = moly.molecule_factory("QC", molecule=ammonia_dimer)
-bucky = moly.molecule_factory("xyz", file='bucky.xyz')
-
-#Figure, resolution and surface material can be changed
-fig = moly.Figure(resolution=(800,800), surface="shiny")
-fig.add_molecule(ammonia_dimer)
-fig.add_molecule(bucky)
+#Different surfaces are available. 
+#Resolution can be increased if saving figure is desired. 
+fig = moly.Figure(figsize=(800,800), surface="shiny")
+fig.add_molecule("QC", molecule=ammonia_dimer)
+fig.add_molecule("xyz", file='bucky.xyz')
 fig.show()
  ```
  
