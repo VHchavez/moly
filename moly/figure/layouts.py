@@ -5,7 +5,7 @@ def get_axis(geometry, axis, max_range, min_range, overage=1.2):
 
     axis = {
         "autorange": False,
-        "range": (overage * min_range, overange * max_range),
+        "range": (overage * min_range, overage * max_range),
         "showgrid": False,
         "zeroline": False,
         "showline": False,

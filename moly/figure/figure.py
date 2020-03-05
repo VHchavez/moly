@@ -23,6 +23,7 @@ class Figure():
 
         self.fig = go.Figure()
         self.molecules = []
+        self.molecule_labels = []
         self.surface = surface
         self.resolution = figsize
         self.max_range = np.zeros(3)
@@ -35,11 +36,12 @@ class Figure():
         bonds = get_connectivity(molecule)
         add_bonds(molecule, bonds, self.fig, self.surface)
         add_atoms(molecule, self.fig, self.surface)
+        
         self.molecules.append(molecule)
+        self.molecule_labels.append(molecule)
         self.assert_range(molecule.geometry)
 
         self.fig.update_layout(get_layout(molecule.geometry, self.resolution, self.max_range, self.min_range))
-        self.fig.show()
 
     def add_blob(self, index=0, iso=0.01, color="Portland", opacity=0.2):
         volume = get_blob(self.molecules[index], iso, opacity, color)
