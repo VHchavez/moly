@@ -25,8 +25,8 @@ class Figure():
         self.molecules = []
         self.surface = surface
         self.resolution = figsize
-        self.max_range = None
-        self.min_range = None
+        self.max_range = np.zeros(3)
+        self.min_range = np.zeros(3)
 
     def show(self):
         self.fig.show()
@@ -36,7 +36,10 @@ class Figure():
         add_bonds(molecule, bonds, self.fig, self.surface)
         add_atoms(molecule, self.fig, self.surface)
         self.molecules.append(molecule)
-        self.fig.update_layout(get_layout(molecule.geometry, self.resolution))
+        self.assert_range(molecule.geometry)
+
+        self.fig.update_layout(get_layout(molecule.geometry, self.resolution, self.max_range, self.min_range))
+        self.fig.show()
 
     def add_blob(self, index=0, iso=0.01, color="Portland", opacity=0.2):
         volume = get_blob(self.molecules[index], iso, opacity, color)
@@ -44,6 +47,15 @@ class Figure():
 
     def add_layer(self, trace):
         self.fig.add_trace(trace)
+
+    def assert_range(self, geometry):
+        
+        mol_max_range = [max(geometry[:,axis]) for axis in range(3)]
+        mol_min_range = [min(geometry[:,axis]) for axis in range(3)]
+
+        self.max_range = [max(value) for value in zip(mol_max_range, self.max_range)]
+        self.min_range = [min(value) for value in zip(mol_min_range, self.min_range)]
+
 
 
 def add_bonds(molecule, bonds, figure, surface):
