@@ -24,7 +24,6 @@ def get_single_cylinder(radius=0.3, points=60):
     phi = np.linspace(0, 2*np.pi, points)
     x   = radius * np.cos(phi)
     y   = radius * np.sin(phi)
-    z = np.array([0, 1])
     
     data = []
     for z in np.linspace(0, 1, 2):

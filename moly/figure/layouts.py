@@ -1,13 +1,9 @@
-import numpy as np
 
-
-def get_axis(geometry, axis):
-
-    max_range = np.abs(geometry).max()
+def get_axis(geometry, axis, max_range, min_range, overage=1.2):
 
     axis = {
         "autorange": False,
-        "range": (-1.6 * max_range, 1.6 * max_range),
+        "range": (overage * min_range, overage * max_range),
         "showgrid": False,
         "zeroline": False,
         "showline": False,
@@ -21,7 +17,7 @@ def get_axis(geometry, axis):
     return axis
 
 
-def get_layout(geometry, figsize):
+def get_layout(geometry, figsize, max_range, min_range):
     layout = {
         "scene_aspectmode": "manual",
         "scene_aspectratio": {
@@ -37,9 +33,9 @@ def get_layout(geometry, figsize):
         "showlegend": False,
         "hovermode": False,
         "scene": {
-            "xaxis": get_axis(geometry, 0),
-            "yaxis": get_axis(geometry, 1),
-            "zaxis": get_axis(geometry, 2)
+            "xaxis": get_axis(geometry, 0, max_range[0], min_range[0]),
+            "yaxis": get_axis(geometry, 1, max_range[1], min_range[1]),
+            "zaxis": get_axis(geometry, 2, max_range[2], min_range[2])
         }
     }
 
