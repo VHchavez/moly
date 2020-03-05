@@ -1,5 +1,3 @@
-import numpy as np
-
 
 def get_axis(geometry, axis, max_range, min_range, overage=1.2):
 
