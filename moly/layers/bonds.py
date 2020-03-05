@@ -2,8 +2,8 @@ import sys
 sys.path.append("..")
 
 import plotly.graph_objects as go
-from ..figure.colors import *
-from ..figure.layouts import *
+from ..figure.colors import colors
+from ..figure.layouts import surface_materials
 
 def get_bond_mesh(cilinder,bond,symbols, surface):
 
