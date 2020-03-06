@@ -14,11 +14,7 @@ from ..molecule.shapes import rotation_matrix
 
 from ..layers.bonds import get_bond_mesh
 from ..layers.geometry import get_sphere_mesh
-<<<<<<< HEAD
 from ..layers.cube import get_cube, cube_to_molecule, get_cubes, get_cubes_traces, get_buttons
-=======
-from ..layers.blob import get_blob, cube_to_molecule, get_cubes, get_cubes_traces, get_buttons
->>>>>>> 1b96e29a315eb6f8f91bc5627575848b1cca3237
 from .layouts import get_layout
 
 
@@ -74,17 +70,10 @@ class Figure():
             ),
         ])
 
-<<<<<<< HEAD
         self.fig.update_layout(get_layout(molecule.geometry, self.resolution, self.max_range * 1.5, self.min_range * 1.5))
 
     def add_cube(self, index=0, iso=0.01, color="Portland", opacity=0.2):
         volume = get_cube(self.molecules[index], iso, opacity, color)
-=======
-        self.fig.update_layout(get_layout(geometry, self.resolution))
-
-    def add_blob(self, index=0, iso=0.01, color="Portland", opacity=0.2):
-        volume = get_blob(self.molecules[index], iso, opacity, color)
->>>>>>> 1b96e29a315eb6f8f91bc5627575848b1cca3237
         self.fig.add_trace(volume)
 
     def add_layer(self, trace):
