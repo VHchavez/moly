@@ -6,9 +6,9 @@ import os
 
 from ..figure.layouts import surface_materials
 
-def get_blob(molecule, iso, opacity, color):
+def get_volume(molecule, iso, opacity, color):
 
-    x, y, z = np.mgrid[:molecule.blob.shape[0], :molecule.blob.shape[1], :molecule.blob.shape[2]]
+    x, y, z = np.mgrid[:molecule.cube.shape[0], :molecule.cube.shape[1], :molecule.cube.shape[2]]
     x_r = x * molecule.spacing[0] + molecule.origin[0]
     y_r = y * molecule.spacing[1] + molecule.origin[1]
     z_r = z * molecule.spacing[2] + molecule.origin[2]
@@ -16,7 +16,7 @@ def get_blob(molecule, iso, opacity, color):
     mesh = go.Isosurface(x = x_r.flatten(),
                          y = y_r.flatten(), 
                          z = z_r.flatten(), 
-                        value = molecule.blob.flatten(),
+                        value = molecule.cube.flatten(),
                         surface_count = 2,
                         colorscale = color,
                         showscale=False,
