@@ -66,7 +66,7 @@ class Figure():
             ),
         ])
 
-        self.fig.update_layout(get_layout(geometry, self.resolution))
+        self.fig.update_layout(get_layout(molecule.geometry, self.resolution, self.max_range * 1.5, self.min_range * 1.5))
 
     def add_blob(self, index=0, iso=0.01, color="Portland", opacity=0.2):
         volume = get_blob(self.molecules[index], iso, opacity, color)
