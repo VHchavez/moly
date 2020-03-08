@@ -22,8 +22,8 @@ class Figure():
     def __init__(self, surface="matte", figsize=None, **kwargs):
 
         self.fig = go.Figure()
-        self.molecules = []
-        self.molecule_labels = []
+        self.molecules = {}
+        self.geometries = []
         self.surface = surface
         self.resolution = figsize
 
@@ -39,11 +39,33 @@ class Figure():
         bonds = get_connectivity(molecule)
         add_bonds(molecule.geometry, molecule.symbols, bonds, self.fig, self.surface)
         add_atoms(molecule.geometry, molecule.atomic_numbers, molecule.symbols, self.fig, self.surface)
-        self.molecules.append(molecule)
-        self.molecule_labels.append(molecule)
-        self.assert_range(molecule.geometry)
+        self.molecules[name] = molecule
 
+        self.assert_range(molecule.geometry)
         self.fig.update_layout(get_layout(molecule.geometry, self.resolution, self.min_range, self.max_range))
+
+
+    def add_measurement(self, mol_label, m, 
+                        line_width=10,
+                        line_color='green'):
+
+        molecule = self.molecules[mol_label]
+        measurement = molecule.measure(m)
+
+        if len(m) == 2:
+            add_line(str(round(measurement, 2)) ,molecule.geometry[m[0]], molecule.geometry[m[1]], 
+                    line_width,
+                    line_color, self.fig)
+
+        elif len(m) == 3:
+            add_angle(str(round(measurement,2)), 
+                    molecule.geometry[m[0]], molecule.geometry[m[1]], molecule.geometry[m[2]], 
+                    line_color, self.fig)
+
+
+        elif len(m) == 4:
+            print("Unable to add dihedral")
+
 
     def add_cubes(self, directory=".", iso=0.03):
         cubes, details = get_cubes(directory)
@@ -125,6 +147,44 @@ def add_atoms(geometry, atomic_numbers, symbols, figure, surface):
     for atom, xyz in enumerate(geometry):
         mesh = get_sphere_mesh(sphere * (atomic_numbers[atom]/30 + 0.6), symbols[atom], xyz, surface)
         figure.add_trace(mesh)
+
+def add_angle(measurement, p1, p2, p3, line_color, figure):
+    
+    midpoint = p2
+
+    triangle = go.Mesh3d(x=[p1[0],p2[0],p3[0]],
+                         y=[p1[1],p2[1],p3[1]],
+                         z=[p1[2],p2[2],p3[2]],
+                         alphahull = 0,
+                         opacity = 1, 
+                         color="lightpink")
+
+    label = go.Scatter3d(x=[midpoint[0]], y=[midpoint[1]], z=[midpoint[2]], 
+                        mode="text",
+                        text=measurement,
+                        textposition="middle center")
+     
+    figure.add_trace(label)
+    figure.add_trace(triangle)
+
+
+def add_line(measurement, p1, p2, line_width, line_color, figure):
+
+    midpoint = (p1 + p2)/2
+
+    line = go.Scatter3d(x=[p1[0], p2[0]],y=[p1[1],p2[1]],z=[p1[2],p2[2]], 
+                        mode="lines",
+                        line={"width": line_width,
+                              "color": line_color, 
+                              "dash" : "dot"})
+    label = go.Scatter3d(x=[midpoint[0]], y=[midpoint[1]], z=[midpoint[2]], 
+                        mode="text",
+                        text=measurement,
+                        textposition="middle center")
+    figure.add_trace(line)
+    figure.add_trace(label)
+
+    
 
 def get_connectivity(molecule):
 

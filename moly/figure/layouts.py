@@ -27,9 +27,9 @@ def get_layout(geometry, figsize, min_range, max_range, overage=1.5):
             "y": 1,
             "z": 1
         },
-        "scene_xaxis_showticklabels": True,
-        "scene_yaxis_showticklabels": True,
-        "scene_zaxis_showticklabels": True,
+        "scene_xaxis_showticklabels": False,
+        "scene_yaxis_showticklabels": False,
+        "scene_zaxis_showticklabels": False,
         "dragmode": "orbit",
         "template": "plotly_white",
         "showlegend": False,
