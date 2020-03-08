@@ -14,7 +14,7 @@ from ..molecule.shapes import rotation_matrix
 
 from ..layers.bonds import get_bond_mesh
 from ..layers.geometry import get_sphere_mesh
-from ..layers.cube import get_cube, cube_to_molecule, get_cubes, get_cubes_traces, get_buttons
+from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cubes_traces, get_buttons
 from .layouts import get_layout
 
 
@@ -34,17 +34,13 @@ class Figure():
 
     def add_molecule(self, name, molecule):
         bonds = get_connectivity(molecule)
-        add_bonds(molecule, bonds, self.fig, self.surface)
-        add_atoms(molecule, self.fig, self.surface)
-<<<<<<< HEAD
-=======
-
->>>>>>> 1b96e29a315eb6f8f91bc5627575848b1cca3237
+        add_bonds(molecule.geometry, molecule.symbols, bonds, self.fig, self.surface)
+        add_atoms(molecule.geometry, molecule.atomic_numbers, molecule.symbols, self.fig, self.surface)
         self.molecules.append(molecule)
         self.molecule_labels.append(molecule)
         self.assert_range(molecule.geometry)
 
-        self.fig.update_layout(get_layout(molecule.geometry, self.resolution, self.max_range, self.min_range))
+        self.fig.update_layout(get_layout(molecule.geometry, self.resolution, 1.5 * self.max_range, 1.5 * self.min_range))
 
     def add_cubes(self, directory, iso=0.03):
         cubes, details = get_cubes(directory)
@@ -70,7 +66,8 @@ class Figure():
             ),
         ])
 
-        self.fig.update_layout(get_layout(molecule.geometry, self.resolution, self.max_range * 1.5, self.min_range * 1.5))
+        self.assert_range(geometry)
+        self.fig.update_layout(get_layout(geometry, self.resolution, 10.0 * self.max_range, 10.0 * self.min_range))
 
     def add_cube(self, index=0, iso=0.01, color="Portland", opacity=0.2):
         volume = get_cube(self.molecules[index], iso, opacity, color)
@@ -84,8 +81,8 @@ class Figure():
         mol_max_range = [max(geometry[:,axis]) for axis in range(3)]
         mol_min_range = [min(geometry[:,axis]) for axis in range(3)]
 
-        self.max_range = [max(value) for value in zip(mol_max_range, self.max_range)]
-        self.min_range = [min(value) for value in zip(mol_min_range, self.min_range)]
+        self.max_range = np.array([max(value) for value in zip(mol_max_range, self.max_range)])
+        self.min_range = np.array([min(value) for value in zip(mol_min_range, self.min_range)])
 
 
 
