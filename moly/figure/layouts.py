@@ -1,9 +1,10 @@
+import numpy as np
 
-def get_axis(geometry, axis, max_range, min_range, overage=1.2):
+def get_axis(min_range, max_range):
 
     axis = {
         "autorange": False,
-        "range": (overage * min_range, overage * max_range),
+        "range": (min_range, max_range),
         "showgrid": False,
         "zeroline": False,
         "showline": False,
@@ -17,7 +18,8 @@ def get_axis(geometry, axis, max_range, min_range, overage=1.2):
     return axis
 
 
-def get_layout(geometry, figsize, max_range, min_range):
+def get_layout(geometry, figsize, min_range, max_range, overage=1.5):
+    axis = get_axis(min_range * overage, max_range * overage)
     layout = {
         "scene_aspectmode": "manual",
         "scene_aspectratio": {
@@ -25,17 +27,17 @@ def get_layout(geometry, figsize, max_range, min_range):
             "y": 1,
             "z": 1
         },
-        "scene_xaxis_showticklabels": False,
-        "scene_yaxis_showticklabels": False,
-        "scene_zaxis_showticklabels": False,
+        "scene_xaxis_showticklabels": True,
+        "scene_yaxis_showticklabels": True,
+        "scene_zaxis_showticklabels": True,
         "dragmode": "orbit",
         "template": "plotly_white",
         "showlegend": False,
         "hovermode": False,
         "scene": {
-            "xaxis": get_axis(geometry, 0, max_range[0], min_range[0]),
-            "yaxis": get_axis(geometry, 1, max_range[1], min_range[1]),
-            "zaxis": get_axis(geometry, 2, max_range[2], min_range[2])
+            "xaxis": axis,
+            "yaxis": axis,
+            "zaxis": axis,
         }
     }
 
@@ -58,11 +60,11 @@ surface_materials = {
         "vertexnormalsepsilon": 1e-15
     },
     "shiny": {
-        "ambient": 0.18,
+        "ambient": 0.3,
         "diffuse": 0.85,
         "fresnel": 0.10,
         "specular": 0.70,
-        "roughness": 0.05,
+        "roughness": 0.05   ,
         "facenormalsepsilon": 1e-15,
         "vertexnormalsepsilon": 1e-15
     }

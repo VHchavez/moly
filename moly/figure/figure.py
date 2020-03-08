@@ -26,11 +26,14 @@ class Figure():
         self.molecule_labels = []
         self.surface = surface
         self.resolution = figsize
-        self.max_range = np.zeros(3)
-        self.min_range = np.zeros(3)
+
+        self.min_range = 0.0
+        self.max_range = 0.0
+
 
     def show(self):
         self.fig.show()
+
 
     def add_molecule(self, name, molecule):
         bonds = get_connectivity(molecule)
@@ -40,9 +43,9 @@ class Figure():
         self.molecule_labels.append(molecule)
         self.assert_range(molecule.geometry)
 
-        self.fig.update_layout(get_layout(molecule.geometry, self.resolution, 1.5 * self.max_range, 1.5 * self.min_range))
+        self.fig.update_layout(get_layout(molecule.geometry, self.resolution, self.min_range, self.max_range))
 
-    def add_cubes(self, directory, iso=0.03):
+    def add_cubes(self, directory=".", iso=0.03):
         cubes, details = get_cubes(directory)
         geometry, symbols, atomic_numbers, spacing, origin = cube_to_molecule(details[0]["name"]+".cube")
         bonds = qcel.molutil.guess_connectivity(symbols, geometry)
@@ -67,7 +70,7 @@ class Figure():
         ])
 
         self.assert_range(geometry)
-        self.fig.update_layout(get_layout(geometry, self.resolution, 10.0 * self.max_range, 10.0 * self.min_range))
+        self.fig.update_layout(get_layout(geometry, self.resolution, self.max_range, self.min_range, overage=3.0))
 
     def add_cube(self, index=0, iso=0.01, color="Portland", opacity=0.2):
         volume = get_cube(self.molecules[index], iso, opacity, color)
@@ -77,13 +80,11 @@ class Figure():
         self.fig.add_trace(trace)
 
     def assert_range(self, geometry):
+
+        self.min_range = self.min_range if self.min_range < np.min(geometry) else np.min(geometry)
+        self.max_range = self.max_range if self.max_range > np.max(geometry) else np.max(geometry)
+
         
-        mol_max_range = [max(geometry[:,axis]) for axis in range(3)]
-        mol_min_range = [min(geometry[:,axis]) for axis in range(3)]
-
-        self.max_range = np.array([max(value) for value in zip(mol_max_range, self.max_range)])
-        self.min_range = np.array([min(value) for value in zip(mol_min_range, self.min_range)])
-
 
 
 def add_bonds(geometry, symbols, bonds, figure, surface):
