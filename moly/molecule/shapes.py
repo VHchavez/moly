@@ -20,7 +20,7 @@ def rotation_matrix(vec1, vec2):
     return rotation_matrix
 
 
-def get_single_cylinder(radius=0.3, points=60):
+def get_single_cylinder(radius, points=60):
     phi = np.linspace(0, 2*np.pi, points)
     x   = radius * np.cos(phi)
     y   = radius * np.sin(phi)

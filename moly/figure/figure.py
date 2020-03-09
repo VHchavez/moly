@@ -35,10 +35,11 @@ class Figure():
         self.fig.show()
 
 
-    def add_molecule(self, name, molecule):
+    def add_molecule(self, name, molecule, style="ball_and_stick"):
+
         bonds = get_connectivity(molecule)
-        add_bonds(molecule.geometry, molecule.symbols, bonds, self.fig, self.surface)
-        add_atoms(molecule.geometry, molecule.atomic_numbers, molecule.symbols, self.fig, self.surface)
+        add_bonds(molecule.geometry, molecule.symbols, bonds, self.fig, style, self.surface)
+        add_atoms(molecule.geometry, molecule.atomic_numbers, molecule.symbols, self.fig, style, self.surface)
         self.molecules[name] = molecule
 
         self.assert_range(molecule.geometry)
@@ -106,10 +107,7 @@ class Figure():
         self.min_range = self.min_range if self.min_range < np.min(geometry) else np.min(geometry)
         self.max_range = self.max_range if self.max_range > np.max(geometry) else np.max(geometry)
 
-        
-
-
-def add_bonds(geometry, symbols, bonds, figure, surface):
+def add_bonds(geometry, symbols, bonds, figure, style, surface):
 
     for idx1, idx2 in bonds:
 
@@ -118,9 +116,18 @@ def add_bonds(geometry, symbols, bonds, figure, surface):
         length = np.linalg.norm(vec2-vec1)
         R = rotation_matrix(np.array([0,0,1]), vec2 - vec1)
 
+        if style is "ball_and_stick" or style is "tubes":
+            r = 0.3
+        elif style is "wireframe":
+            r = 0.06
+        elif style is "spacefilling":
+            return
+        else:
+            raise ValueError("Only avaliable styles are \"ball_and_stick\", \"tubes\", \"spacefilling\" and \"wireframe\" ")
+
         if symbols[idx1] == symbols[idx2]:
 
-            cyl = get_single_cylinder()
+            cyl = get_single_cylinder(radius=r)
             cyl[:,2] *= length
             cyl = R.dot(cyl.T).T
             cyl += vec1
@@ -130,7 +137,7 @@ def add_bonds(geometry, symbols, bonds, figure, surface):
 
         if symbols[idx1] != symbols[idx2]:
 
-            cyl = get_single_cylinder()
+            cyl = get_single_cylinder(radius=r)
             cyl[:,2] *= length / 2
             cyl = R.dot(cyl.T).T
             cyl_1 = cyl + vec1
@@ -141,11 +148,20 @@ def add_bonds(geometry, symbols, bonds, figure, surface):
             mesh = get_bond_mesh(cyl_2, idx2, symbols, surface)
             figure.add_trace(mesh)
             
-
-def add_atoms(geometry, atomic_numbers, symbols, figure, surface):
+def add_atoms(geometry, atomic_numbers, symbols, figure, style, surface):
     sphere = np.array(get_sphere())
     for atom, xyz in enumerate(geometry):
-        mesh = get_sphere_mesh(sphere * (atomic_numbers[atom]/30 + 0.6), symbols[atom], xyz, surface)
+        if style is "ball_and_stick":
+            reshaped_sphere = sphere * (atomic_numbers[atom]/30 + 0.6)
+        elif style is "tubes":
+            reshaped_sphere = reshaped_sphere = sphere * 0.3
+        elif style is "spacefilling":
+            reshaped_sphere = sphere * (atomic_numbers[atom]/20 + 1.5)
+        elif style is "wireframe":
+            return 
+        else:
+            raise ValueError("Only avaliable styles are \"ball_and_stick\", \"tubes\", \"spacefilling\" and \"wireframe\" ")
+        mesh = get_sphere_mesh(reshaped_sphere,symbols[atom], xyz, surface)
         figure.add_trace(mesh)
 
 def add_angle(measurement, p1, p2, p3, line_color, figure):
@@ -167,7 +183,6 @@ def add_angle(measurement, p1, p2, p3, line_color, figure):
     figure.add_trace(label)
     figure.add_trace(triangle)
 
-
 def add_line(measurement, p1, p2, line_width, line_color, figure):
 
     midpoint = (p1 + p2)/2
@@ -183,8 +198,6 @@ def add_line(measurement, p1, p2, line_width, line_color, figure):
                         textposition="middle center")
     figure.add_trace(line)
     figure.add_trace(label)
-
-    
 
 def get_connectivity(molecule):
 
