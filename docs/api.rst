@@ -4,4 +4,5 @@ API Documentation
 .. autosummary::
    :toctree: autosummary
 
-   moly.canvas
+   moly.figure
+   
