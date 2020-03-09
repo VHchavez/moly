@@ -64,7 +64,16 @@ surface_materials = {
         "diffuse": 0.85,
         "fresnel": 0.10,
         "specular": 0.70,
-        "roughness": 0.05   ,
+        "roughness": 0.05,
+        "facenormalsepsilon": 1e-15,
+        "vertexnormalsepsilon": 1e-15
+    },
+    "blobs": {
+        "ambient": 0.9,
+        "diffuse": 0.85,
+        "fresnel": 0.10,
+        "specular": 0.20,
+        "roughness": 0.5,
         "facenormalsepsilon": 1e-15,
         "vertexnormalsepsilon": 1e-15
     }

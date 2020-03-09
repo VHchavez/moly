@@ -41,7 +41,7 @@ def get_cubes(folder):
     return cubes, meta
 
 
-def get_cubes_traces(cubes, spacing, origin, iso=0.03):
+def get_cubes_traces(cubes, spacing, origin, iso, colorscale):
     x,y,z = np.mgrid[:cubes[0].shape[0], :cubes[0].shape[1], :cubes[0].shape[2]]
 
     x_r = x * spacing[0] + origin[0]
@@ -57,15 +57,15 @@ def get_cubes_traces(cubes, spacing, origin, iso=0.03):
                               z = z_r.flatten(), 
                               value = cube.flatten(),
                               surface_count = 2,
-                              colorscale = "Portland",
+                              colorscale = colorscale,
                               visible = True if i == 0 else False,
                               showscale = False,
                               isomin= -1 * iso,
                               isomax= 1 * iso, 
-                              flatshading = True,
-                              lighting = surface_materials["matte"], 
+                              flatshading = False,
+                              lighting = surface_materials["blobs"], 
                               caps=dict(x_show=False, y_show=False, z_show=False),
-                              opacity=0.4)
+                              opacity=0.3)
         
         traces.append(trace)
         

@@ -68,16 +68,16 @@ class Figure():
             print("Unable to add dihedral")
 
 
-    def add_cubes(self, directory=".", iso=0.03):
+    def add_cubes(self, directory=".", iso=0.03, style="ball_and_stick", colorscale="Bluered_r"):
         cubes, details = get_cubes(directory)
         geometry, symbols, atomic_numbers, spacing, origin = cube_to_molecule(details[0]["name"]+".cube")
         bonds = qcel.molutil.guess_connectivity(symbols, geometry)
-        add_bonds(geometry, symbols, bonds, self.fig, self.surface)
-        add_atoms(geometry, atomic_numbers, symbols, self.fig, self.surface)
+        add_bonds(geometry, symbols, bonds, self.fig, style, self.surface)
+        add_atoms(geometry, atomic_numbers, symbols, self.fig, style, self.surface)
 
         geometry_traces = len(self.fig.data)
 
-        traces = get_cubes_traces(cubes, spacing, origin, iso)
+        traces = get_cubes_traces(cubes, spacing, origin, iso, colorscale)
         for vol in traces:
             self.fig.add_traces(vol)
 
@@ -93,7 +93,7 @@ class Figure():
         ])
 
         self.assert_range(geometry)
-        self.fig.update_layout(get_layout(geometry, self.resolution, self.max_range, self.min_range, overage=3.0))
+        self.fig.update_layout(get_layout(geometry, self.resolution, self.max_range, self.min_range, overage=4.0))
 
     def add_cube(self, index=0, iso=0.01, color="Portland", opacity=0.2):
         volume = get_cube(self.molecules[index], iso, opacity, color)
@@ -158,7 +158,7 @@ def add_atoms(geometry, atomic_numbers, symbols, figure, style, surface):
         elif style is "spacefilling":
             reshaped_sphere = sphere * (atomic_numbers[atom]/20 + 1.5)
         elif style is "wireframe":
-            return 
+            reshaped_sphere = reshaped_sphere = sphere * 0.06
         else:
             raise ValueError("Only avaliable styles are \"ball_and_stick\", \"tubes\", \"spacefilling\" and \"wireframe\" ")
         mesh = get_sphere_mesh(reshaped_sphere,symbols[atom], xyz, surface)
