@@ -2,7 +2,7 @@ import plotly.graph_objects as go
 import numpy as np
 import qcelemental as qcel
 import glob
-import os
+
 
 from ..figure.layouts import surface_materials
 

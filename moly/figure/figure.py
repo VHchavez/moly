@@ -154,11 +154,11 @@ def add_atoms(geometry, atomic_numbers, symbols, figure, style, surface):
         if style is "ball_and_stick":
             reshaped_sphere = sphere * (atomic_numbers[atom]/30 + 0.6)
         elif style is "tubes":
-            reshaped_sphere = reshaped_sphere = sphere * 0.3
+            reshaped_sphere = sphere * 0.3
         elif style is "spacefilling":
             reshaped_sphere = sphere * (atomic_numbers[atom]/20 + 1.5)
         elif style is "wireframe":
-            reshaped_sphere = reshaped_sphere = sphere * 0.06
+            reshaped_sphere = sphere * 0.06
         else:
             raise ValueError("Only avaliable styles are \"ball_and_stick\", \"tubes\", \"spacefilling\" and \"wireframe\" ")
         mesh = get_sphere_mesh(reshaped_sphere,symbols[atom], xyz, surface)
