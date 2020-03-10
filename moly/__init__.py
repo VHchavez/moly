@@ -5,6 +5,7 @@ A short description of the project.
 
 # Add imports here
 from .figure.figure import Figure
+from .advanced.cubeprop import *
 from qcelemental.models.molecule import Molecule
 
 # Handle versioneer

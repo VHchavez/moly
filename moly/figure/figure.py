@@ -10,12 +10,13 @@ import plotly.graph_objects as go
 from ..molecule.shapes import get_sphere
 from ..molecule.shapes import get_single_cylinder
 from ..molecule.shapes import rotation_matrix
-#from ..molecule.molecule_factory import molecule_factory
 
 from ..layers.bonds import get_bond_mesh
 from ..layers.geometry import get_sphere_mesh
-from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cubes_traces, get_buttons
+from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cubes_traces, get_buttons, get_surface
 from .layouts import get_layout
+
+from ..advanced import cubeprop
 
 
 class Figure():
@@ -66,6 +67,44 @@ class Figure():
 
         elif len(m) == 4:
             print("Unable to add dihedral")
+
+
+    def add_density(self, wfn, densities, iso, quality=0.2, overage=2.0, style="ball_and_stick"):
+
+        molecule = qcel.models.Molecule.from_data(wfn.molecule().save_string_xyz())
+        bonds = get_connectivity(molecule)
+        add_bonds(molecule.geometry, molecule.symbols, bonds, self.fig, style, self.surface)
+        add_atoms(molecule.geometry, molecule.atomic_numbers, molecule.symbols, self.fig, style, self.surface)
+        self.assert_range(molecule.geometry)
+        self.fig.update_layout(get_layout(molecule.geometry, self.resolution, self.min_range * overage, self.max_range * overage))
+
+
+        L = [4.0, 4.0, 4.0]
+        D = [quality, quality, quality]
+
+        O, N =  cubeprop.build_grid(wfn, L, D) 
+        block, points, nxyz, npoints =  cubeprop.populate_grid(wfn, O, N, D)
+        traces = []
+        if "Da" in densities:
+            density_mesh = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, wfn.Da())
+        elif "Db" in densities:
+            density_mesh = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, wfn.Db())
+        elif "Ds" in densities:
+            Ds = wfn.Da().clone()
+            Ds.axpy(-1.0, wfn.Db())
+            density_mesh = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, Ds)
+        elif "Dt" in densities:
+            Dt = wfn.Da().clone()
+            Dt.axpy(1.0, wfn.Db())
+            density_mesh = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, Dt)
+
+        if len(densities) == 1:
+            trace = get_surface(density_mesh, quality, O)
+            self.fig.add_trace(trace)    
+
+        if len(densities) > 1:
+            "I can only handle one density for now"
+
 
 
     def add_cubes(self, directory=".", iso=0.03, style="ball_and_stick", colorscale="Bluered_r"):

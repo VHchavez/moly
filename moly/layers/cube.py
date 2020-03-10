@@ -6,7 +6,7 @@ import glob
 
 from ..figure.layouts import surface_materials
 
-def get_volume(cube, spacing, oringin, iso, opacity, color):
+def get_volume(cube, spacing, origin, iso, opacity, color):
 
     x, y, z = np.mgrid[:cube.shape[0], :cube.shape[1], :cube.shape[2]]
     x_r = x * spacing[0] + origin[0]
@@ -23,6 +23,37 @@ def get_volume(cube, spacing, oringin, iso, opacity, color):
                         isomin=-1 * iso,
                         isomax= 1 * iso,
                         opacity = opacity)
+
+    return mesh
+
+
+def get_surface(grid, spacing, origin):
+
+    lighting = surface_materials["matte"]
+
+    x = np.array(grid[0])
+    y = np.array(grid[1])
+    z = np.array(grid[2])
+
+    x = x * spacing + origin[0]
+    y = y * spacing + origin[1]
+    z = z * spacing + origin[2]
+
+    mesh = go.Mesh3d({
+            'x': x, 
+            'y': y, 
+            'z': z, 
+            'alphahull': 0,
+            'color'    : 'turquoise',
+            'opacity' : 0.50,
+            'flatshading' : False,
+#            "cmin"     :-7,# atrick to get a nice plot (z.min()=-3.31909)
+            "lighting" : lighting,
+            "lightposition" : {"x":100,
+                               "y":200,
+                               "z":0}
+            
+    })
 
     return mesh
 
