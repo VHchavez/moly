@@ -128,7 +128,7 @@ class Figure():
 
 
 
-    def add_cubes(self, directory=".", iso=0.03, style="ball_and_stick", colorscale="Bluered_r"):
+    def add_cubes(self, directory=".", iso=0.03, style="ball_and_stick", colorscale="Portland_r", opacity=0.3):
         cubes, details = get_cubes(directory)
         geometry, symbols, atomic_numbers, spacing, origin = cube_to_molecule(details[0]["name"]+".cube")
         bonds = qcel.molutil.guess_connectivity(symbols, geometry)
@@ -137,7 +137,7 @@ class Figure():
 
         geometry_traces = len(self.fig.data)
 
-        traces = get_cubes_traces(cubes, spacing, origin, iso, colorscale)
+        traces = get_cubes_traces(cubes, spacing, origin, iso, colorscale,opacity)
         for vol in traces:
             self.fig.add_traces(vol)
 
@@ -155,7 +155,7 @@ class Figure():
         self.assert_range(geometry)
         self.fig.update_layout(get_layout(geometry, self.resolution, self.max_range, self.min_range, overage=4.0))
 
-    def add_cube(self, index=0, iso=0.01, color="Portland", opacity=0.2):
+    def add_cube(self, index=0, iso=0.01, color="Portland_r", opacity=0.2, style="ball_and_stick"):
         volume = get_cube(self.molecules[index], iso, opacity, color)
         self.fig.add_trace(volume)
 

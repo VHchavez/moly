@@ -29,14 +29,6 @@ def get_volume(cube, spacing, origin, iso, opacity, color):
 
 def get_surface(grid, spacing, origin):
 
-    lighting ={ "ambient": 0.3,
-        "diffuse": 0.1,
-        "fresnel": 0.45,
-        "specular": 0.70,
-        "roughness": 0.1,
-        "facenormalsepsilon": 1e-15,
-        "vertexnormalsepsilon": 1e-15}
-
     x = np.array(grid[0])
     y = np.array(grid[1])
     z = np.array(grid[2])
@@ -51,21 +43,20 @@ def get_surface(grid, spacing, origin):
             'alphahull': 0,
             'color'    : 'turquoise',
             'opacity' : 0.20,
+            'visible' : False,
             'flatshading' : False,
 #            "cmin"     :-7,# atrick to get a nice plot (z.min()=-3.31909)
-            "lighting" : lighting,
+            "lighting" : surface_materials["glass"],
             "lightposition" : {"x":100,
                                 "y":200,
                                     "z":0}
     })
-
-
     return mesh
-
-
 
 def get_cubes(folder):
     cube_list = [f for f in glob.glob(folder+"/*.cube")]
+    if not cube_list:
+        raise ValueError("Directory does not contain cube files") 
     cubes = []
     meta = []
     for cube_file in cube_list:
@@ -76,8 +67,7 @@ def get_cubes(folder):
         
     return cubes, meta
 
-
-def get_cubes_traces(cubes, spacing, origin, iso, colorscale):
+def get_cubes_traces(cubes, spacing, origin, iso, colorscale, opacity):
     x,y,z = np.mgrid[:cubes[0].shape[0], :cubes[0].shape[1], :cubes[0].shape[2]]
 
     x_r = x * spacing[0] + origin[0]
@@ -94,14 +84,14 @@ def get_cubes_traces(cubes, spacing, origin, iso, colorscale):
                               value = cube.flatten(),
                               surface_count = 2,
                               colorscale = colorscale,
-                              visible = True if i == 0 else False,
+                              visible = False,
                               showscale = False,
                               isomin= -1 * iso,
                               isomax= 1 * iso, 
                               flatshading = False,
-                              lighting = surface_materials["blobs"], 
+                              lighting = surface_materials["matte"], 
                               caps=dict(x_show=False, y_show=False, z_show=False),
-                              opacity=0.3)
+                              opacity=opacity)
         
         traces.append(trace)
         

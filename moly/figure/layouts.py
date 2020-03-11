@@ -68,13 +68,12 @@ surface_materials = {
         "facenormalsepsilon": 1e-15,
         "vertexnormalsepsilon": 1e-15
     },
-    "blobs": {
-        "ambient": 0.9,
-        "diffuse": 0.85,
-        "fresnel": 0.10,
-        "specular": 0.20,
-        "roughness": 0.5,
+    "glass" : { 
+        "ambient": 0.3,
+        "diffuse": 0.1,
+        "fresnel": 0.45,
+        "specular": 0.70,
+        "roughness": 0.1,
         "facenormalsepsilon": 1e-15,
-        "vertexnormalsepsilon": 1e-15
-    }
+        "vertexnormalsepsilon": 1e-15}
 }
