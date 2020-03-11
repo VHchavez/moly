@@ -317,7 +317,7 @@ def reorder_array(O, N, D, nxyz, npoints, v):
 
     return v2
 
-def compute_density(O, N, D, npoints, points, nxyz, block, matrix):
+def compute_density(O, N, D, npoints, points, nxyz, block, matrix, iso):
 
     v = add_density(npoints, points, block, matrix)
     isocontour_range, threshold = compute_isocontour_range(v, npoints)
@@ -328,7 +328,7 @@ def compute_density(O, N, D, npoints, points, nxyz, block, matrix):
     it = np.nditer(v2, flags=['multi_index'])
     x, y, z = [], [], []
     while not it.finished:
-        if np.isclose(it[0],0.03,atol=0.002):
+        if np.isclose(it[0],iso,atol=0.009):
             x.append(it.multi_index[0])
             y.append(it.multi_index[1])
             z.append(it.multi_index[2])

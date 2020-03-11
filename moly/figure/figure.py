@@ -13,7 +13,7 @@ from ..molecule.shapes import rotation_matrix
 
 from ..layers.bonds import get_bond_mesh
 from ..layers.geometry import get_sphere_mesh
-from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cubes_traces, get_buttons, get_surface
+from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cubes_traces, get_buttons, get_surface, get_buttons_wfn
 from .layouts import get_layout
 
 from ..advanced import cubeprop
@@ -71,39 +71,60 @@ class Figure():
 
     def add_density(self, wfn, densities, iso, quality=0.2, overage=2.0, style="ball_and_stick"):
 
+        if len(densities) > 4:
+            raise ValueError("Up to four densities are availiable: Da, Db, Ds, Dt")
+
         molecule = qcel.models.Molecule.from_data(wfn.molecule().save_string_xyz())
         bonds = get_connectivity(molecule)
         add_bonds(molecule.geometry, molecule.symbols, bonds, self.fig, style, self.surface)
         add_atoms(molecule.geometry, molecule.atomic_numbers, molecule.symbols, self.fig, style, self.surface)
-        self.assert_range(molecule.geometry)
-        self.fig.update_layout(get_layout(molecule.geometry, self.resolution, self.min_range * overage, self.max_range * overage))
-
 
         L = [4.0, 4.0, 4.0]
         D = [quality, quality, quality]
 
         O, N =  cubeprop.build_grid(wfn, L, D) 
         block, points, nxyz, npoints =  cubeprop.populate_grid(wfn, O, N, D)
-        traces = []
+        trace_list = []
         if "Da" in densities:
-            density_mesh = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, wfn.Da())
-        elif "Db" in densities:
-            density_mesh = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, wfn.Db())
-        elif "Ds" in densities:
+            density_mesh = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, wfn.Da(), iso)
+            trace = get_surface(density_mesh, quality, O)
+            trace_list.append(trace)
+        if "Db" in densities:
+            density_mesh = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, wfn.Db(), iso)
+            trace = get_surface(density_mesh, quality, O)
+            trace_list.append(trace)
+        if "Ds" in densities:
             Ds = wfn.Da().clone()
             Ds.axpy(-1.0, wfn.Db())
-            density_mesh = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, Ds)
-        elif "Dt" in densities:
+            density_mesh = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, Ds, iso)
+            trace = get_surface(density_mesh, quality, O)
+            trace_list.append(trace)
+        if "Dt" in densities:
             Dt = wfn.Da().clone()
             Dt.axpy(1.0, wfn.Db())
-            density_mesh = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, Dt)
-
-        if len(densities) == 1:
+            density_mesh = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, Dt, iso)
             trace = get_surface(density_mesh, quality, O)
-            self.fig.add_trace(trace)    
+            trace_list.append(trace)
 
-        if len(densities) > 1:
-            "I can only handle one density for now"
+        if len(trace_list) == 1:
+            self.fig.add_trace(trace_list[0])    
+
+        elif len(trace_list) > 1:
+            geometry_traces = len(self.fig.data)
+
+            button_list = get_buttons_wfn(densities, geometry_traces)
+            self.fig.update_layout(updatemenus=[dict(showactive=True,
+                                                     buttons=button_list,
+                                                     font={"family": "Helvetica", "size" : 18},
+                                                     borderwidth=0
+            ),
+            ])
+
+            for trace in trace_list:
+                self.fig.add_trace(trace)
+
+        self.assert_range(molecule.geometry)
+        self.fig.update_layout(get_layout(molecule.geometry, self.resolution, self.min_range * overage, self.max_range * overage))
 
 
 
@@ -123,7 +144,7 @@ class Figure():
         
         button_list = get_buttons(details, geometry_traces)
 
-        self.fig.update_layout(updatemenus=[dict(showactive=False,
+        self.fig.update_layout(updatemenus=[dict(showactive=True,
                                                 buttons=button_list,
                                                 font={"family": "Helvetica",
                                                       "size" : 18},

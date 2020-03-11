@@ -29,12 +29,17 @@ def get_volume(cube, spacing, origin, iso, opacity, color):
 
 def get_surface(grid, spacing, origin):
 
-    lighting = surface_materials["matte"]
+    lighting ={ "ambient": 0.3,
+        "diffuse": 0.1,
+        "fresnel": 0.45,
+        "specular": 0.70,
+        "roughness": 0.1,
+        "facenormalsepsilon": 1e-15,
+        "vertexnormalsepsilon": 1e-15}
 
     x = np.array(grid[0])
     y = np.array(grid[1])
     z = np.array(grid[2])
-
     x = x * spacing + origin[0]
     y = y * spacing + origin[1]
     z = z * spacing + origin[2]
@@ -45,15 +50,15 @@ def get_surface(grid, spacing, origin):
             'z': z, 
             'alphahull': 0,
             'color'    : 'turquoise',
-            'opacity' : 0.50,
+            'opacity' : 0.20,
             'flatshading' : False,
 #            "cmin"     :-7,# atrick to get a nice plot (z.min()=-3.31909)
             "lighting" : lighting,
             "lightposition" : {"x":100,
-                               "y":200,
-                               "z":0}
-            
+                                "y":200,
+                                    "z":0}
     })
+
 
     return mesh
 
@@ -105,6 +110,13 @@ def get_cubes_traces(cubes, spacing, origin, iso, colorscale):
 
 def get_buttons(meta, geo_traces):
     buttons =  []
+
+    buttons.append(dict(label="Geometry",
+                         method="update",
+                         args=[{"visible": [True for traces in range(geo_traces)] + [False for cube_j in meta]},
+                               {"title": "",
+                                "annotations": []}]))
+
     for cube_i in meta:
         button = dict(label=cube_i["name"],
                          method="update",
@@ -112,6 +124,25 @@ def get_buttons(meta, geo_traces):
                                {"title": "",
                                 "annotations": []}])
         buttons.append(button)
+
+    return buttons
+
+def get_buttons_wfn(meta, geo_traces):
+    buttons =  []
+
+    buttons.append(dict(label="Geometry",
+                        method="update",
+                        args=[{"visible": [True for traces in range(geo_traces)] + [False for trace_j in meta]},
+                            {"title": "",
+                            "annotations": []}]))
+
+    for trace_i in meta:
+        button = dict(label=trace_i,
+                      method="update",
+                      args=[{"visible": [True for traces in range(geo_traces)] + [True if trace_i == trace_j else False for trace_j in meta]},
+                            {"title": "", "annotations": []}])
+        buttons.append(button)
+
     return buttons
 
 
