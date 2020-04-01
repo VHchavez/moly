@@ -38,13 +38,28 @@ class Figure():
         range_layout = get_range(self.min_range, self.max_range)
         self.fig.update_layout(range_layout)
 
+    def get_connectivity(self, molecule):
+
+        mol_dict = molecule.dict()
+        symbols = molecule.symbols
+        geometry = molecule.geometry
+        
+        if not "connectivity" in mol_dict:
+            return qcel.molutil.guess_connectivity(symbols, geometry)
+        
+        elif mol_dict["connectivity"] is None:
+            return  qcel.molutil.guess_connectivity(symbols, geometry)
+
+        elif "connectivity" in mol_dict:
+            return self.dict["connectivity"]
+
     #Traces
 
     def add_molecule(self, name, molecule, style="ball_and_stick"):
 
         self.molecules[name] = molecule
 
-        bonds = get_connectivity(molecule)
+        bonds = self.get_connectivity(molecule)
         bond_list = get_bonds(molecule.geometry, molecule.symbols, bonds, style, self.surface)
         atom_list = get_atoms(molecule.geometry, molecule.atomic_numbers, molecule.symbols, style, self.surface)
 
@@ -116,7 +131,6 @@ class Figure():
         elif len(m) == 4:
             print("Unable to add dihedral")
 
-
     def add_orbitals(self, wfn, orbitals, iso, quality=0.2, overage=2.0, style="ball_and_stick"):
         import psi4
 
@@ -125,7 +139,7 @@ class Figure():
 
 
         molecule = qcel.models.Molecule.from_data(wfn.molecule().save_string_xyz())
-        bonds = get_connectivity(molecule)
+        bonds = self.get_connectivity(molecule)
         add_bonds(molecule.geometry, molecule.symbols, bonds, self.fig, style, self.surface)
         add_atoms(molecule.geometry, molecule.atomic_numbers, molecule.symbols, self.fig, style, self.surface)
 
@@ -218,17 +232,3 @@ class Figure():
         self.fig.update_layout(get_layout(geometry, self.resolution, self.max_range, self.min_range, overage=4.0))
 
 
-def get_connectivity(molecule):
-
-    mol_dict = molecule.dict()
-    symbols = molecule.symbols
-    geometry = molecule.geometry
-    
-    if not "connectivity" in mol_dict:
-        return qcel.molutil.guess_connectivity(symbols, geometry)
-    
-    elif mol_dict["connectivity"] is None:
-        return  qcel.molutil.guess_connectivity(symbols, geometry)
-
-    elif "connectivity" in mol_dict:
-        return self.dict["connectivity"]
