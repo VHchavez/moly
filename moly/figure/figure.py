@@ -45,15 +45,15 @@ class Figure():
         geometry = molecule.geometry
         
         if not "connectivity" in mol_dict:
-            return qcel.molutil.guess_connectivity(symbols, geometry)
+            return qcel.molutil.guess_connectivity(symbols,geometry)
         
         elif mol_dict["connectivity"] is None:
-            return  qcel.molutil.guess_connectivity(symbols, geometry)
+            return qcel.molutil.guess_connectivity(symbols,geometry)
 
         elif "connectivity" in mol_dict:
             return self.dict["connectivity"]
 
-    #Traces
+    #Basic Traces
 
     def add_molecule(self, name, molecule, style="ball_and_stick"):
 
@@ -230,5 +230,30 @@ class Figure():
 
         self.assert_range(geometry)
         self.fig.update_layout(get_layout(geometry, self.resolution, self.max_range, self.min_range, overage=4.0))
+
+    #Psi4 Traces
+
+    def add_density(self, name, wfn, iso=0.03, colorscale="portland_r", opacity=0.3, geometry=True, 
+                    spacing=[0.2, 0.2, 0.2], overage=[4.0, 4.0, 4.0]):
+
+        molecule = qcel.models.Molecule.from_data(wfn.basisset().molecule().save_string_xyz())
+        self.add_molecule("name"+"_geometry", molecule)
+
+        D = spacing
+        L = overage
+
+        O, N =  cubeprop.build_grid(wfn, L, D) 
+        block, points, nxyz, npoints =  cubeprop.populate_grid(wfn, O, N, D)
+        volume = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, wfn.Da())
+        trace, min_range, max_range = get_cubes_traces(volume, spacing, O, iso, colorscale, opacity)
+
+        self.fig.add_trace(trace)
+        self.fig.update_layout(get_layout(self.resolution))
+        self.assert_range([min_range, max_range])
+
+
+
+
+
 
 

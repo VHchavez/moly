@@ -320,7 +320,7 @@ def reorder_array(O, N, D, nxyz, npoints, v):
 
     return v2
 
-def compute_density(O, N, D, npoints, points, nxyz, block, matrix, iso):
+def compute_density(O, N, D, npoints, points, nxyz, block, matrix):
 
     v = add_density(npoints, points, block, matrix)
     isocontour_range, threshold = compute_isocontour_range(v, npoints)
@@ -328,16 +328,16 @@ def compute_density(O, N, D, npoints, points, nxyz, block, matrix, iso):
     v2 = reorder_array(O, N, D, nxyz, npoints, v)
     v2 = v2.reshape(int(N[0]),int(N[1]),int(N[2]))
 
-    it = np.nditer(v2, flags=['multi_index'])
-    x, y, z = [], [], []
-    while not it.finished:
-        if np.isclose(it[0],iso,atol=0.005):
-            x.append(it.multi_index[0])
-            y.append(it.multi_index[1])
-            z.append(it.multi_index[2])
-        it.iternext()
+    # it = np.nditer(v2, flags=['multi_index'])
+    # x, y, z = [], [], []
+    # while not it.finished:
+    #     if np.isclose(it[0],iso,atol=0.005):
+    #         x.append(it.multi_index[0])
+    #         y.append(it.multi_index[1])
+    #         z.append(it.multi_index[2])
+    #     it.iternext()
 
-    return [x,y,z]
+    return v2
 
 
 def compute_orbitals(O, N, D,npoints, points, nxyz, block, C, orbitals, iso):

@@ -195,7 +195,6 @@ def get_buttons_wfn(meta, geo_traces):
 
     return buttons
 
-
 def cube_to_molecule(cube_file):
 
     cube , meta = cube_to_array(cube_file)
@@ -217,7 +216,6 @@ def cube_to_molecule(cube_file):
     atomic_numbers = np.array(atomic_numbers)
     
     return geometry, symbols, atomic_numbers, spacing, origin, cube
-
 
 def cube_to_array(file):
     """
