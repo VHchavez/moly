@@ -229,6 +229,9 @@ def add_density(npoints, points, block, matrix):
     return v
 
 
+
+
+
 def compute_isocontour_range(v, npoints):
     """
     Computes threshold for isocontour range
@@ -328,7 +331,7 @@ def compute_density(O, N, D, npoints, points, nxyz, block, matrix, iso):
     it = np.nditer(v2, flags=['multi_index'])
     x, y, z = [], [], []
     while not it.finished:
-        if np.isclose(it[0],iso,atol=0.009):
+        if np.isclose(it[0],iso,atol=0.005):
             x.append(it.multi_index[0])
             y.append(it.multi_index[1])
             z.append(it.multi_index[2])
@@ -337,5 +340,70 @@ def compute_density(O, N, D, npoints, points, nxyz, block, matrix, iso):
     return [x,y,z]
 
 
+def compute_orbitals(O, N, D,npoints, points, nxyz, block, C, orbitals, iso):
+
+    v = np.zeros(len(orbitals), npoints)
+    v = add_orbitals(npoints, points, block, v, C) 
+
+    return v
+
+
+
+def add_orbitals(npoints, points, block, v, C):
+
+    na = C.cols()
+    #points.set_Cs(C)
+    points.set_pointers(C)
+    #print(points.point_values())
+    print(points.orbital_values())
+    #psi = points.orbital_values()["PSI_A"]
+    #psi = points.orbital_value("PSI_A")
+    #psip = psi.pointer()
+
+    # offset = 0
+    # for i in range(len(block)):
+    #     points.compute_orbitals(block[i])
+    #     n_points = block[i].npoints()
+    #     offset += n_points
+    #     v[offset-n_points:offset] = psi.np[:n_points]
+
+    return points
 
         
+def add_density(npoints, points, block, matrix):
+    """
+    Computes density in new grid
+
+
+    Parameters
+    ----------
+
+    npoints: int
+        total number of points
+    points : psi4.core.RKSFunctions
+    block : list
+        Set of psi4.core.BlockOPoints for cube grid
+    matrix : psi4.core.Matrix
+        One-particle density matrix
+
+
+    Returns
+    -------
+
+    v : numpy array
+        Array with density values on the grid
+    """
+
+    v = np.zeros(int(npoints))
+
+    points.set_pointers(matrix)
+    rho = points.point_values()["RHO_A"]
+
+    offset = 0
+    for i in range(len(block)):
+        points.compute_points(block[i])
+        n_points = block[i].npoints()
+        offset += n_points
+        v[offset-n_points:offset] = 0.5 * rho.np[:n_points]
+
+    return v

@@ -2,6 +2,8 @@ import plotly.graph_objects as go
 
 from ..figure.colors import *
 from ..figure.layouts import *
+from ..molecule.shapes import get_sphere
+
 
 def get_sphere_mesh(sphere, sym, xyz, surface):
 
@@ -18,10 +20,34 @@ def get_sphere_mesh(sphere, sym, xyz, surface):
             "lighting" : lightning,
             "lightposition" : {"x":100,
                                "y":200,
-                               "z":0}
-            
+                               "z":0}     
     })
 
     return mesh
+
+
+def get_atoms(geometry, atomic_numbers, symbols, style, surface):
+    trace_list = []
+    sphere = np.array(get_sphere())
+
+    for atom, xyz in enumerate(geometry):
+        if style is "ball_and_stick":
+            reshaped_sphere = sphere * (atomic_numbers[atom]/30 + 0.6)
+        elif style is "tubes":
+            reshaped_sphere = sphere * 0.3
+        elif style is "spacefilling":
+            reshaped_sphere = sphere * (atomic_numbers[atom]/20 + 1.5)
+        elif style is "wireframe":
+            reshaped_sphere = sphere * 0.06
+        else:
+            raise ValueError("Only avaliable styles are \"ball_and_stick\", \"tubes\", \"spacefilling\" and \"wireframe\" ")
+        mesh = get_sphere_mesh(reshaped_sphere,symbols[atom], xyz, surface)
+        trace_list.append(mesh)
+
+    return trace_list
+
+
+
+
 
 

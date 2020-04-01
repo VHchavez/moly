@@ -1,10 +1,26 @@
 import numpy as np
 
-def get_axis(min_range, max_range):
+def get_range(min_range, max_range, overage=2.5):
 
     axis = {
         "autorange": False,
-        "range": (min_range, max_range),
+        "range": (min_range * overage, max_range * overage),
+    }
+
+    layout = {"scene" : {"xaxis":axis, 
+                         "yaxis":axis,
+                         "zaxis":axis}, 
+                         
+             "scene_camera" : {"up":{"x":0, "y":0, "z":1},
+                               "center":{"x":0, "y":0, "z":0},
+                               "eye":{"x":2.2/max_range, "y":2.2/max_range, "z":2.2/max_range}}}
+
+    return layout
+
+
+def get_layout(figsize=None):
+
+    axis = {
         "showgrid": False,
         "zeroline": False,
         "showline": False,
@@ -15,11 +31,6 @@ def get_axis(min_range, max_range):
         "showspikes": False
     }
 
-    return axis
-
-
-def get_layout(geometry, figsize, min_range, max_range, overage=1.5):
-    axis = get_axis(min_range * overage, max_range * overage)
     layout = {
         "scene_aspectmode": "manual",
         "scene_aspectratio": {
@@ -34,11 +45,10 @@ def get_layout(geometry, figsize, min_range, max_range, overage=1.5):
         "template": "plotly_white",
         "showlegend": False,
         "hovermode": False,
-        "scene": {
-            "xaxis": axis,
-            "yaxis": axis,
-            "zaxis": axis,
-        }
+        "scene" : {"xaxis": axis ,
+                   "yaxis": axis, 
+                   "zaxis": axis,  
+                    },
     }
 
     if figsize is not None:
@@ -65,6 +75,15 @@ surface_materials = {
         "fresnel": 0.10,
         "specular": 0.70,
         "roughness": 0.05,
+        "facenormalsepsilon": 1e-15,
+        "vertexnormalsepsilon": 1e-15
+    },
+     "orbs": {
+        "ambient": 0.3,
+        "diffuse": 0.6,
+        "fresnel": 0.10,
+        "specular": 0.70,
+        "roughness": 0.9,
         "facenormalsepsilon": 1e-15,
         "vertexnormalsepsilon": 1e-15
     },
