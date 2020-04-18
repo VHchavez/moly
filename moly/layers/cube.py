@@ -61,7 +61,7 @@ def get_cubes(folder):
     meta = []
     for cube_file in cube_list:
         cube_np, details = cube_to_array(cube_file)
-        details.update({"name":cube_file[2:-5]})
+        details.update({"name":cube_file[:-5]})
         cubes.append(cube_np)
         meta.append(details)
         
@@ -120,25 +120,23 @@ def get_cubes_surfaces(cubes, spacing, origin, iso, colorscale, opacity):
 
         traces.append(mesh)
 
-    return traces
+    return traces   
 
-    
-
-def get_cubes_traces(cube, spacing, origin, iso, colorscale, opacity):
+def get_cubes_traces(cube, spacing, origin, iso, colorscale, opacity, visible=True):
     x,y,z = np.mgrid[:cube.shape[0], :cube.shape[1], :cube.shape[2]]
 
     x_r = x * spacing[0] + origin[0]
     y_r = y * spacing[1] + origin[1]
     z_r = z * spacing[2] + origin[2]
 
-    value = cube.flatten()
+    #value = cube.flatten()
     trace = go.Isosurface(  x = x_r.flatten(),
                             y = y_r.flatten(), 
                             z = z_r.flatten(), 
                             value = cube.flatten(),
                             surface_count = 2,
                             colorscale = colorscale,
-                            visible = True,
+                            visible = visible,
                             showscale = False,
                             isomin= -1 * iso,
                             isomax= 1 * iso, 
@@ -158,8 +156,9 @@ def get_cubes_traces(cube, spacing, origin, iso, colorscale, opacity):
 
     return trace, min_range, max_range
 
-def get_buttons(meta, geo_traces):
+def get_buttons(meta, geo_traces, folder):
     buttons =  []
+    dirlenght = len(folder) + 1 
 
     buttons.append(dict(label="Geometry",
                          method="update",
@@ -168,7 +167,7 @@ def get_buttons(meta, geo_traces):
                                 "annotations": []}]))
 
     for cube_i in meta:
-        button = dict(label=cube_i["name"],
+        button = dict(label=cube_i["name"][dirlenght:],
                          method="update",
                          args=[{"visible": [True for traces in range(geo_traces)] + [True if cube_i['name'] == cube_j['name'] else False for cube_j in meta]},
                                {"title": "",

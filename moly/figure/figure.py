@@ -5,6 +5,7 @@ Creates main figure
 """
 import numpy as np
 import qcelemental as qcel
+import psi4
 import plotly.graph_objects as go
 
 from ..layers.bonds import get_bond_mesh, get_bonds
@@ -206,19 +207,34 @@ class Figure():
 
     def add_cubes(self, directory=".", iso=0.03, style="ball_and_stick", colorscale="Portland_r", opacity=0.3):
         cubes, details = get_cubes(directory)
-        geometry, symbols, atomic_numbers, spacing, origin = cube_to_molecule(details[0]["name"]+".cube")
+        geometry, symbols, atomic_numbers, spacing, origin, _ = cube_to_molecule(details[0]["name"]+".cube")
         bonds = qcel.molutil.guess_connectivity(symbols, geometry)
-        add_bonds(geometry, symbols, bonds, self.fig, style, self.surface)
-        add_atoms(geometry, atomic_numbers, symbols, self.fig, style, self.surface)
+
+
+        bond_list = get_bonds(geometry, symbols, bonds, style, self.surface)
+        atom_list = get_atoms(geometry, atomic_numbers, symbols, style, self.surface)
+
+        for bond in bond_list:
+            self.fig.add_trace(bond)
+        for atom in atom_list:
+            self.fig.add_trace(atom)
 
         geometry_traces = len(self.fig.data)
 
-        traces = get_cubes_traces(cubes, spacing, origin, iso, colorscale,opacity)
-        for vol in traces:
-            self.fig.add_traces(vol)
+        cube_list = []
+        min_list = []
+        max_list = []
+        for cube in cubes:
+            trace, min_range, max_range = get_cubes_traces(cube, spacing, origin, iso, colorscale,opacity, visible=False)
+            cube_list.append(trace)
+            min_list.append(min_range)
+            max_list.append(max_range)
+        
+        for cube in cube_list:
+            self.fig.add_traces(cube)
 
         
-        button_list = get_buttons(details, geometry_traces)
+        button_list = get_buttons(details, geometry_traces, directory)
 
         self.fig.update_layout(updatemenus=[dict(showactive=True,
                                                 buttons=button_list,
@@ -228,8 +244,10 @@ class Figure():
             ),
         ])
 
-        self.assert_range(geometry)
-        self.fig.update_layout(get_layout(geometry, self.resolution, self.max_range, self.min_range, overage=4.0))
+        #Update layout
+        self.fig.update_layout(get_layout(self.resolution))
+        self.assert_range([min(min_list), max(max_list)])
+
 
     #Psi4 Traces
 
@@ -250,6 +268,9 @@ class Figure():
         self.fig.add_trace(trace)
         self.fig.update_layout(get_layout(self.resolution))
         self.assert_range([min_range, max_range])
+
+   
+
 
 
 

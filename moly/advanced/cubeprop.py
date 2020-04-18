@@ -347,29 +347,7 @@ def compute_orbitals(O, N, D,npoints, points, nxyz, block, C, orbitals, iso):
 
     return v
 
-
-
-def add_orbitals(npoints, points, block, v, C):
-
-    na = C.cols()
-    #points.set_Cs(C)
-    points.set_pointers(C)
-    #print(points.point_values())
-    print(points.orbital_values())
-    #psi = points.orbital_values()["PSI_A"]
-    #psi = points.orbital_value("PSI_A")
-    #psip = psi.pointer()
-
-    # offset = 0
-    # for i in range(len(block)):
-    #     points.compute_orbitals(block[i])
-    #     n_points = block[i].npoints()
-    #     offset += n_points
-    #     v[offset-n_points:offset] = psi.np[:n_points]
-
-    return points
-
-        
+     
 def add_density(npoints, points, block, matrix):
     """
     Computes density in new grid
