@@ -45,7 +45,6 @@ def get_surface(grid, spacing, origin):
             'opacity' : 0.20,
             'visible' : False,
             'flatshading' : False,
-#            "cmin"     :-7,# atrick to get a nice plot (z.min()=-3.31909)
             "lighting" : surface_materials["glass"],
             "lightposition" : {"x":100,
                                 "y":200,

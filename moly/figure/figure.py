@@ -75,7 +75,7 @@ class Figure():
         self.fig.update_layout(get_layout(self.resolution))
         self.assert_range(molecule.geometry)
 
-    def add_cube(self, file, iso=0.01, plot_geometry=True, colorscale="Portland_r", opacity=0.2, style="ball_and_stick"):
+    def add_cube(self, file, iso=0.01, plot_geometry=True, colorscale="portland", opacity=0.2, style="ball_and_stick"):
 
         geometry, symbols, atomic_numbers, spacing, origin, cube = cube_to_molecule(file)
     
@@ -205,7 +205,7 @@ class Figure():
         self.assert_range(molecule.geometry)
         self.fig.update_layout(get_layout(molecule.geometry, self.resolution, self.min_range * overage, self.max_range * overage))
 
-    def add_cubes(self, directory=".", iso=0.03, style="ball_and_stick", colorscale="Portland_r", opacity=0.3):
+    def add_cubes(self, directory=".", iso=0.03, style="ball_and_stick", colorscale="portland", opacity=0.3):
         cubes, details = get_cubes(directory)
         geometry, symbols, atomic_numbers, spacing, origin, _ = cube_to_molecule(details[0]["name"]+".cube")
         bonds = qcel.molutil.guess_connectivity(symbols, geometry)
@@ -251,7 +251,7 @@ class Figure():
 
     #Psi4 Traces
 
-    def add_density(self, name, wfn, iso=0.03, colorscale="portland_r", opacity=0.3, geometry=True, 
+    def add_density(self, name, wfn, iso=0.03, colorscale="portland", opacity=0.3, geometry=True, 
                     spacing=[0.2, 0.2, 0.2], overage=[4.0, 4.0, 4.0]):
 
         molecule = qcel.models.Molecule.from_data(wfn.basisset().molecule().save_string_xyz())
