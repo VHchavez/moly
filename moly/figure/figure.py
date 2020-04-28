@@ -243,7 +243,7 @@ class Figure():
         min_list = []
         max_list = []
         for cube in cubes:
-            trace, min_range, max_range = get_cubes_traces(cube, spacing, origin, iso, colorscale,opacity, visible=False)
+            trace, min_range, max_range = get_cube_trace(cube, spacing, origin, iso, colorscale,opacity, visible=False)
             cube_list.append(trace)
             min_list.append(min_range)
             max_list.append(max_range)
