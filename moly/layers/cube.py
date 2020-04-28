@@ -121,7 +121,7 @@ def get_cubes_surfaces(cubes, spacing, origin, iso, colorscale, opacity):
 
     return traces   
 
-def get_cubes_traces(cube, spacing, origin, iso, colorscale, opacity, visible=True):
+def get_cube_trace(cube, spacing, origin, iso, colorscale, opacity, visible=True):
     x,y,z = np.mgrid[:cube.shape[0], :cube.shape[1], :cube.shape[2]]
 
     x_r = x * spacing[0] + origin[0]
@@ -154,44 +154,6 @@ def get_cubes_traces(cube, spacing, origin, iso, colorscale, opacity, visible=Tr
     min_range = min(min_range_x, min_range_y, min_range_z)
 
     return trace, min_range, max_range
-
-def get_buttons(meta, geo_traces, folder):
-    buttons =  []
-    dirlenght = len(folder) + 1 
-
-    buttons.append(dict(label="Geometry",
-                         method="update",
-                         args=[{"visible": [True for traces in range(geo_traces)] + [False for cube_j in meta]},
-                               {"title": "",
-                                "annotations": []}]))
-
-    for cube_i in meta:
-        button = dict(label=cube_i["name"][dirlenght:],
-                         method="update",
-                         args=[{"visible": [True for traces in range(geo_traces)] + [True if cube_i['name'] == cube_j['name'] else False for cube_j in meta]},
-                               {"title": "",
-                                "annotations": []}])
-        buttons.append(button)
-
-    return buttons
-
-def get_buttons_wfn(meta, geo_traces):
-    buttons =  []
-
-    buttons.append(dict(label="Geometry",
-                        method="update",
-                        args=[{"visible": [True for traces in range(geo_traces)] + [False for trace_j in meta]},
-                            {"title": "",
-                            "annotations": []}]))
-
-    for trace_i in meta:
-        button = dict(label=trace_i,
-                      method="update",
-                      args=[{"visible": [True for traces in range(geo_traces)] + [True if trace_i == trace_j else False for trace_j in meta]},
-                            {"title": "", "annotations": []}])
-        buttons.append(button)
-
-    return buttons
 
 def cube_to_molecule(cube_file):
 
