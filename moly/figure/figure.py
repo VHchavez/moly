@@ -11,9 +11,10 @@ import plotly.graph_objects as go
 from ..layers.bonds import get_bond_mesh, get_bonds
 from ..layers.geometry import get_sphere_mesh, get_atoms
 from ..layers.measurements import get_angle, get_line
-from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cubes_traces, get_buttons, get_surface, get_buttons_wfn, get_cubes_surfaces, cube_to_array
+from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cube_trace, get_surface, get_cubes_surfaces, cube_to_array
 
 from .layouts import get_layout, get_range
+from .widgets import get_slider, get_buttons, get_buttons_wfn
 
 from ..advanced import cubeprop
 
@@ -75,7 +76,9 @@ class Figure():
         self.fig.update_layout(get_layout(self.resolution))
         self.assert_range(molecule.geometry)
 
-    def add_cube(self, file, iso=0.01, plot_geometry=True, colorscale="portland", opacity=0.2, style="ball_and_stick"):
+    def add_cube(self, file, iso=0.01, plot_geometry=True, 
+                 colorscale="portland", opacity=0.2, style="ball_and_stick", 
+                 iso_steps=3):
 
         geometry, symbols, atomic_numbers, spacing, origin, cube = cube_to_molecule(file)
     
@@ -91,10 +94,25 @@ class Figure():
             for atom in atom_list:
                 self.fig.add_trace(atom)
 
-        trace, min_range, max_range = get_cubes_traces(cube, spacing, origin, iso, colorscale, opacity) 
+        #Single value of iso
+        if type(iso) == float: 
+            trace, min_range, max_range = get_cube_trace(cube, spacing, origin, iso, colorscale, opacity) 
+            #Add traces
+            self.fig.add_trace(trace)
 
-        #Add traces
-        self.fig.add_trace(trace)
+        #Slider with multiple iso values
+        elif type(iso) == list:
+            traces = []
+            geometry_traces = len(self.fig.data)
+            iso_range = np.linspace(iso[0], iso[1], iso_steps)
+            for i, iso_i in enumerate(iso_range):
+                if i == 0:
+                    trace, min_range, max_range = get_cube_trace(cube, spacing, origin, iso_i, colorscale, opacity, visible=True)
+                elif i != 0:
+                    trace, min_range, max_range = get_cube_trace(cube, spacing, origin, iso_i, colorscale, opacity, visible=False)
+                self.fig.add_trace(trace)
+            slider = get_slider(iso_range, iso_steps, geometry_traces)
+            self.fig.update_layout(sliders=slider)
 
         #Update layout
         self.fig.update_layout(get_layout(self.resolution))
