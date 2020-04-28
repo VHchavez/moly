@@ -281,7 +281,7 @@ class Figure():
         O, N =  cubeprop.build_grid(wfn, L, D) 
         block, points, nxyz, npoints =  cubeprop.populate_grid(wfn, O, N, D)
         volume = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, wfn.Da())
-        trace, min_range, max_range = get_cubes_traces(volume, spacing, O, iso, colorscale, opacity)
+        trace, min_range, max_range = get_cube_trace(volume, spacing, O, iso, colorscale, opacity)
 
         self.fig.add_trace(trace)
         self.fig.update_layout(get_layout(self.resolution))
