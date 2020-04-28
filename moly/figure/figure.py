@@ -5,14 +5,12 @@ Creates main figure
 """
 import numpy as np
 import qcelemental as qcel
-import psi4
 import plotly.graph_objects as go
 
-from ..layers.bonds import get_bond_mesh, get_bonds
-from ..layers.geometry import get_sphere_mesh, get_atoms
+from ..layers.bonds import get_bonds
+from ..layers.geometry import get_atoms
 from ..layers.measurements import get_angle, get_line
-from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cube_trace, get_surface, get_cubes_surfaces, cube_to_array
-
+from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cube_trace
 from .layouts import get_layout, get_range
 from .widgets import get_slider, get_buttons, get_buttons_wfn
 
@@ -149,79 +147,6 @@ class Figure():
 
         elif len(m) == 4:
             print("Unable to add dihedral")
-
-    def add_orbitals(self, wfn, orbitals, iso, quality=0.2, overage=2.0, style="ball_and_stick"):
-        import psi4
-
-        if max(orbitals) > wfn.basisset().nbf():
-            raise ValueError("The maximum MO is greater than the avaliable number of basis functions")
-
-
-        molecule = qcel.models.Molecule.from_data(wfn.molecule().save_string_xyz())
-        bonds = self.get_connectivity(molecule)
-        add_bonds(molecule.geometry, molecule.symbols, bonds, self.fig, style, self.surface)
-        add_atoms(molecule.geometry, molecule.atomic_numbers, molecule.symbols, self.fig, style, self.surface)
-
-
-        L = [4.0, 4.0, 4.0]
-        D = [quality, quality, quality]
-
-        O, N =  cubeprop.build_grid(wfn, L, D) 
-        block, points, nxyz, npoints =  cubeprop.populate_grid(wfn, O, N, D)
-        trace_list_a = []
-        trace_list_b = []
-
-        # for orb_i in orbitals:
-
-        #     C = wfn.Ca()
-        #     C_req = C.np[:,orbitals[0]-1:orbitals[-1]]
-        #     C_req = psi4.core.Matrix.from_array(C_req)
-
-        #     print(C_req)
-        #     #matrix = np.einsum('p,q->pq', wfn.Ca().np[:,orb_i], wfn.Ca().np[:,orb_i])
-        #     orb_i_np = cubeprop.compute_orbitals(O, N, D, npoints, points, nxyz, block, C_req, orbitals, iso)
-
-        # return orb_i_np
-
-        #for orb_i in orbitals:
-        #    orbital_a = np.zeros_like(wfn.Ca().np)
-        #    orbital_a[:,orb_i] = wfn.Ca().np[:,orb_i]    
-        #    orbital_b = np.zeros_like(wfn.Cb().np)
-        #    orbital_b[:,orb_i] = wfn.Cb().np[:,orb_i]
-        #    #orbital_a = np.einsum('p,q->pq', wfn.Ca().np[:,orb_i], wfn.Ca().np[:,orb_i])
-        #    #orbital_b = np.einsum('p,q->pq', wfn.Cb().np[:,orb_i], wfn.Cb().np[:,orb_i])
-        #    orbital_a = psi4.core.Matrix.from_array(orbital_a)
-        #    orbital_b = psi4.core.Matrix.from_array(orbital_b)
-        #    orbital_mesh_a = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, orbital_a, iso)
-        #    orbital_mesh_b = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, orbital_b, iso)
-        #    trace_a = get_surface(orbital_mesh_a, quality, O)
-        #    trace_b = get_surface(orbital_mesh_b, quality, O)
-        #    trace_list_a.append(trace_a)
-        #    trace_list_b.append(trace_b)
-
-        if len(orbitals) == 1:
-           self.fig.add_trace(trace_list_a[0])   
-           self.fig.add_trace(trace_list_b[0])  
-
-        if len(orbitals) > 1:
-            geometry_traces = len(self.fig.data)
-
-            orbital_list = [str(orb) for orb in orbitals] + [str(orb) for orb in orbitals]
-            trace_list = trace_list_a + trace_list_b
-
-            button_list = get_buttons_wfn(orbital_list, geometry_traces)
-            self.fig.update_layout(updatemenus=[dict(showactive=True,
-                                                     buttons=button_list,
-                                                     font={"family": "Helvetica", "size" : 18},
-                                                     borderwidth=0
-            ),
-            ])
-
-            for trace in trace_list:
-                self.fig.add_trace(trace)
-
-        self.assert_range(molecule.geometry)
-        self.fig.update_layout(get_layout(molecule.geometry, self.resolution, self.min_range * overage, self.max_range * overage))
 
     def add_cubes(self, directory=".", iso=0.03, style="ball_and_stick", colorscale="portland", opacity=0.3):
         cubes, details = get_cubes(directory)

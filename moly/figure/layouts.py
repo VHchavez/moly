@@ -1,4 +1,8 @@
-import numpy as np
+"""
+
+Generates layouts and surface materials
+
+"""
 
 def get_range(min_range, max_range, overage=2.5):
 

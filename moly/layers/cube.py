@@ -73,21 +73,13 @@ def get_cubes_surfaces(cubes, spacing, origin, iso, colorscale, opacity):
     for cube in cubes:
         it = np.nditer(cube, flags=['multi_index'])
         x, y, z = [], [], []
-        xx, yy, zz = [], [], []
         while not it.finished:
             if np.isclose(it[0],iso,atol=0.005):
                 x.append(it.multi_index[0])
                 y.append(it.multi_index[1])
                 z.append(it.multi_index[2])
-            # elif np.isclose(it[0],iso, atol=0.005):
-            #     xx.append(it.multi_index[0])
-            #     yy.append(it.multi_index[1])
-            #     zz.append(it.multi_index[2])
             it.iternext()
         cubes_surfaces.append([x,y,z])
-        # cubes_surfaces.append([xx,yy,zz])
-
-
     
     for surface in cubes_surfaces:
 
