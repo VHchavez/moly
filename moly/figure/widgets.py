@@ -1,23 +1,5 @@
 import numpy as np 
 
-def get_slider(iso_range, iso_steps, geometry_traces):
-
-    steps = []
-
-    for i in range(iso_steps):
-        step = {"method" : "update", 
-                "label"  : str(iso_range[i]),
-                "args"  : [{"visible" : [True] * geometry_traces + [False] * iso_steps}]}
-        step["args"][0]["visible"][geometry_traces + i] = True
-        steps.append(step)
-
-    sliders = [{"active" : iso_steps, 
-               "currentvalue" : {"prefix" : "Iso Value: "}, 
-               "pad" : {"t" : 50},
-               "steps" : steps}]
-
-    return sliders
-
 def get_buttons(meta, geo_traces, folder):
     buttons =  []
     dirlenght = len(folder) + 1 

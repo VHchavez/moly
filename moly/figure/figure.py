@@ -98,20 +98,6 @@ class Figure():
             #Add traces
             self.fig.add_trace(trace)
 
-        #Slider with multiple iso values
-        elif type(iso) == list:
-            traces = []
-            geometry_traces = len(self.fig.data)
-            iso_range = np.linspace(iso[0], iso[1], iso_steps)
-            for i, iso_i in enumerate(iso_range):
-                if i == 0:
-                    trace, min_range, max_range = get_cube_trace(cube, spacing, origin, iso_i, colorscale, opacity, visible=True)
-                elif i != 0:
-                    trace, min_range, max_range = get_cube_trace(cube, spacing, origin, iso_i, colorscale, opacity, visible=False)
-                self.fig.add_trace(trace)
-            slider = get_slider(iso_range, iso_steps, geometry_traces)
-            self.fig.update_layout(sliders=slider)
-
         #Update layout
         self.fig.update_layout(get_layout(self.resolution))
         self.assert_range([min_range, max_range])
