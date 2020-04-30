@@ -12,7 +12,7 @@ from ..layers.geometry import get_atoms
 from ..layers.measurements import get_angle, get_line
 from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cube_trace
 from .layouts import get_layout, get_range
-from .widgets import get_slider, get_buttons, get_buttons_wfn
+from .widgets import get_buttons, get_buttons_wfn
 
 from ..advanced import cubeprop
 
