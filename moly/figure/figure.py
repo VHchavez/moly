@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 
 from ..layers.bonds import get_bonds
 from ..layers.geometry import get_atoms
-from ..layers.measurements import get_angle, get_line
+# from ..layers.measurements import get_angle, get_line
 from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cube_trace
 from .layouts import get_layout, get_range
 from .widgets import get_buttons, get_buttons_wfn
@@ -98,9 +98,36 @@ class Figure():
             #Add traces
             self.fig.add_trace(trace)
 
+        elif type(iso) == list or type(iso) == tuple:
+            steps = []
+            iso_traces = []
+            for i, step in enumerate(iso):
+                trace, min_range, max_range = get_cube_trace(cube, spacing, origin, step, colorscale, opacity)
+                if i != 0:
+                    trace.visible = False
+                self.fig.add_trace(trace)
+                iso_traces.append(trace)
+                one_step = dict(method="restyle", args=["visible", [False] * (len(iso))],)
+                one_step["args"][1][i] = True  # Toggle i'th trace to "visible"
+                steps.append(one_step)
+
+            sliders = [dict(
+                active=10,
+                currentvalue={"prefix": "Iso: "},
+                pad={"t": 50},
+                steps=steps
+            )]
+
+            self.fig.update_layout(get_layout(self.resolution), sliders=sliders)
+            
+            for i, ival in enumerate(iso, start = 0):
+                self.fig['layout']['sliders'][0]['steps'][i]['label'] = str(ival)[:5]
+
+
         #Update layout
-        self.fig.update_layout(get_layout(self.resolution))
+        self.fig.update_layout(get_layout(self.resolution), sliders=sliders)
         self.assert_range([min_range, max_range])
+
 
     def add_measurement(self, mol_label, m, 
                         line_width=20,
