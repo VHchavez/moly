@@ -117,7 +117,7 @@ class Figure():
             
         #Slider with multiple iso value
         elif type(iso) == list or type(iso) == tuple:
-            geometry_traces = len(self.fig.data)
+            geometry_traces = self.fig.data
             for i, iso_i in enumerate(iso):
                 if i == 0:
                     trace, min_range, max_range = get_cube_trace(cube, spacing, origin, iso_i, colorscale, opacity, visible=True)
