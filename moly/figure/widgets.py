@@ -43,11 +43,11 @@ def get_slider(iso, geometry_traces):
     for i, iso_i in enumerate(iso):
         one_step = {'method': "restyle", 
                     'label': str(iso_i), 
-                    'args': [{"visible": [True] * len(geometry_traces) + [False] * len(iso)}]}
-        one_step["args"][0]['visible'][len(geometry_traces) + i] = True
+                    'args': [{"visible": [True] * geometry_traces + [False] * len(iso)}]}
+        one_step["args"][0]['visible'][geometry_traces + i] = True
         steps.append(one_step)
 
-    sliders = [dict(active=len(geometry_traces),
+    sliders = [dict(active=len(iso),
                     currentvalue={"prefix": "Iso: "},
                     pad={"t": 50},
                     steps=steps)]
