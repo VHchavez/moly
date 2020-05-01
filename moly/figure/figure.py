@@ -9,10 +9,10 @@ import plotly.graph_objects as go
 
 from ..layers.bonds import get_bonds
 from ..layers.geometry import get_atoms
-from ..layers.measurements import get_angle, get_line
+# from ..layers.measurements import get_angle, get_line
 from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cube_trace
 from .layouts import get_layout, get_range
-from .widgets import get_buttons, get_buttons_wfn
+from .widgets import get_buttons, get_buttons_wfn, get_slider
 
 from ..advanced import cubeprop
 
@@ -75,8 +75,26 @@ class Figure():
         self.assert_range(molecule.geometry)
 
     def add_cube(self, file, iso=0.01, plot_geometry=True, 
-                 colorscale="portland", opacity=0.2, style="ball_and_stick", 
-                 iso_steps=3):
+                 colorscale="portland", opacity=0.2, style="ball_and_stick"):
+        """
+        Adds an isosurface plot to the figure from a cube file.
+        
+        Parameters
+        ----------
+        file : str
+            The path to the cube file
+        iso : float, tuple, or list
+            If a float is given, the single isosurface is plotted
+            Otherwise, all isosurface plots can be navigated via a slider
+        plot_geometry : boolean
+            Plots bonds and atoms if True, only plots the isosurface(s) if False
+        colorscale : str
+            The color scheme
+        opacity : float
+            The degree of transparency for the isosurface(s)
+        style : str
+            How bonds and atoms are represented within the plot
+        """
 
         geometry, symbols, atomic_numbers, spacing, origin, cube = cube_to_molecule(file)
     
@@ -84,11 +102,10 @@ class Figure():
             bonds = qcel.molutil.guess_connectivity(symbols, geometry)
             bond_list = get_bonds(geometry, symbols, bonds, style, self.surface)
             atom_list = get_atoms(geometry, atomic_numbers, symbols, style, self.surface)
-
+            
             #Add traces
             for bond in bond_list:
                 self.fig.add_trace(bond)
-
             for atom in atom_list:
                 self.fig.add_trace(atom)
 
@@ -97,10 +114,25 @@ class Figure():
             trace, min_range, max_range = get_cube_trace(cube, spacing, origin, iso, colorscale, opacity) 
             #Add traces
             self.fig.add_trace(trace)
+            
+        #Slider with multiple iso value
+        elif type(iso) == list or type(iso) == tuple:
+            geometry_traces = len(self.fig.data)
+            for i, iso_i in enumerate(iso):
+                if i == 0:
+                    trace, min_range, max_range = get_cube_trace(cube, spacing, origin, iso_i, colorscale, opacity, visible=True)
+                elif i != 0:
+                    trace, min_range, max_range = get_cube_trace(cube, spacing, origin, iso_i, colorscale, opacity, visible=False)
+                
+                self.fig.add_trace(trace)
+
+            slider = get_slider(iso, geometry_traces)
+            self.fig.update_layout(sliders=slider)
 
         #Update layout
         self.fig.update_layout(get_layout(self.resolution))
         self.assert_range([min_range, max_range])
+
 
     def add_measurement(self, mol_label, m, 
                         line_width=20,
