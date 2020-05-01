@@ -12,7 +12,7 @@ from ..layers.geometry import get_atoms
 # from ..layers.measurements import get_angle, get_line
 from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cube_trace
 from .layouts import get_layout, get_range
-from .widgets import get_buttons, get_buttons_wfn
+from .widgets import get_buttons, get_buttons_wfn, get_slider
 
 from ..advanced import cubeprop
 
@@ -75,16 +75,45 @@ class Figure():
         self.assert_range(molecule.geometry)
 
     def add_cube(self, file, iso=0.01, plot_geometry=True, 
-                 colorscale="portland", opacity=0.2, style="ball_and_stick", 
-                 iso_steps=3):
+                 colorscale="portland", opacity=0.2, style="ball_and_stick"):
+        """Adds an isosurface plot to the figure from a cube file.
+
+        An isosurface is the three-dimensional analog of a contour line.
+        A cube file describes all the volumetric data required to plot this
+        isosurface. Therefore orbitals for molecules can be visualized at 
+        specific iso values. 
+
+        Parameters
+        ----------
+        file : str
+            The path to the cube file
+        iso : float, tuple, or list
+            If a float is given, the single isosurface is plotted
+            Otherwise, all isosurface plots can be navigated via a slider
+        plot_geometry : boolean
+            Plots bonds and atoms if True, only plots the isosurface(s) if False
+        colorscale : str
+            The color scheme
+        opacity : float
+            The degree of transparency for the isosurface(s)
+        style : str
+            How bonds and atoms are represented within the plot
+
+        References
+        ----------
+        File Format
+            http://paulbourke.net/dataformats/cube/
+        Isosurface
+            https://en.wikipedia.org/wiki/Isosurface
+        """
 
         geometry, symbols, atomic_numbers, spacing, origin, cube = cube_to_molecule(file)
     
-        if plot_geometry is True:
-            bonds = qcel.molutil.guess_connectivity(symbols, geometry)
-            bond_list = get_bonds(geometry, symbols, bonds, style, self.surface)
-            atom_list = get_atoms(geometry, atomic_numbers, symbols, style, self.surface)
+        bonds = qcel.molutil.guess_connectivity(symbols, geometry)
+        bond_list = get_bonds(geometry, symbols, bonds, style, self.surface)
+        atom_list = get_atoms(geometry, atomic_numbers, symbols, style, self.surface)
 
+        if plot_geometry is True:
             #Add traces
             for bond in bond_list:
                 self.fig.add_trace(bond)
@@ -100,32 +129,21 @@ class Figure():
 
         elif type(iso) == list or type(iso) == tuple:
             steps = []
-            iso_traces = []
-            for i, step in enumerate(iso):
-                trace, min_range, max_range = get_cube_trace(cube, spacing, origin, step, colorscale, opacity)
-                if i != 0:
-                    trace.visible = False
+            # Number of current traces within figure (bonds and atoms)
+            n_traces = len(self.fig.data)
+            for i, iso_i in enumerate(iso):
+                if i == 0:
+                    trace, min_range, max_range = get_cube_trace(cube, spacing, origin, iso_i, colorscale, opacity)
+                elif i != 0:
+                    trace, min_range, max_range = get_cube_trace(cube, spacing, origin, iso_i, colorscale, opacity, visible=False)
+                
                 self.fig.add_trace(trace)
-                iso_traces.append(trace)
-                one_step = dict(method="restyle", args=["visible", [False] * (len(iso))],)
-                one_step["args"][1][i] = True  # Toggle i'th trace to "visible"
-                steps.append(one_step)
 
-            sliders = [dict(
-                active=10,
-                currentvalue={"prefix": "Iso: "},
-                pad={"t": 50},
-                steps=steps
-            )]
-
+            sliders = get_slider(iso, n_traces)
             self.fig.update_layout(get_layout(self.resolution), sliders=sliders)
-            
-            for i, ival in enumerate(iso, start = 0):
-                self.fig['layout']['sliders'][0]['steps'][i]['label'] = str(ival)[:5]
-
 
         #Update layout
-        self.fig.update_layout(get_layout(self.resolution), sliders=sliders)
+        self.fig.update_layout(get_layout(self.resolution))
         self.assert_range([min_range, max_range])
 
 

@@ -37,3 +37,21 @@ def get_buttons_wfn(meta, geo_traces):
         buttons.append(button)
 
     return buttons
+
+def get_slider(iso, n_traces):
+    steps = []
+    for i, iso_i in enumerate(iso):
+        one_step = {'method': "restyle", 
+                    'label': str(iso_i), 
+                    'args': [{"visible": [True] * n_traces + [False] * len(iso)}]}
+        one_step["args"][0]['visible'][n_traces + i] = True
+        steps.append(one_step)
+
+    sliders = [dict(
+        active=10,
+        currentvalue={"prefix": "Iso: "},
+        pad={"t": 50},
+        steps=steps
+    )]
+
+    return sliders
