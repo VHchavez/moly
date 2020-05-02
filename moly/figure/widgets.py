@@ -47,7 +47,7 @@ def get_slider(iso, geometry_traces):
         one_step["args"][0]['visible'][len(geometry_traces) + i] = True
         steps.append(one_step)
 
-    sliders = [dict(active=len(geometry_traces),
+    sliders = [dict(active=len(iso),
                     currentvalue={"prefix": "Iso: "},
                     pad={"t": 50},
                     steps=steps)]
