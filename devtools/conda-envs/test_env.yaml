@@ -1,5 +1,7 @@
 name: test
 channels:
+  - conda-forge
+  - psi4
 dependencies:
     # Base depends
   - python
@@ -7,6 +9,7 @@ dependencies:
   - numpy
   - plotly
   - qcelemental
+  - psi4
 
     # Testing
   - pytest
