@@ -6,6 +6,9 @@ A short description of the project.
 # Add imports here
 from .figure.figure import Figure
 from qcelemental.models.molecule import Molecule
+from .psi4 import psi4
+from .data.data_molecules import water, buckyball
+
 
 # Handle versioneer
 from ._version import get_versions
