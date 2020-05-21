@@ -87,7 +87,6 @@ def build_grid(wfn, L, D):
 
     return O, N
 
-
 def populate_grid(wfn, O, N, D):
     """
     Build cube grid
@@ -189,7 +188,6 @@ def populate_grid(wfn, O, N, D):
 #    return block, points, nxyz, npoints, [x_plot, y_plot, z_plot]
     return block, points, nxyz, npoints
 
-
 def add_density(npoints, points, block, matrix):
     """
     Computes density in new grid
@@ -227,10 +225,6 @@ def add_density(npoints, points, block, matrix):
         v[offset-n_points:offset] = 0.5 * rho.np[:n_points]
 
     return v
-
-
-
-
 
 def compute_isocontour_range(v, npoints):
     """
@@ -293,7 +287,6 @@ def compute_isocontour_range(v, npoints):
 
     return values, cumulative_threshold
 
-
 def reorder_array(O, N, D, nxyz, npoints, v):
 
     #Reorder the grid
@@ -339,7 +332,6 @@ def compute_density(O, N, D, npoints, points, nxyz, block, matrix):
 
     return v2
 
-
 def compute_orbitals(O, N, D,npoints, points, nxyz, block, C, orbitals, iso):
 
     v = np.zeros(len(orbitals), npoints)
@@ -347,7 +339,6 @@ def compute_orbitals(O, N, D,npoints, points, nxyz, block, C, orbitals, iso):
 
     return v
 
-     
 def add_density(npoints, points, block, matrix):
     """
     Computes density in new grid
