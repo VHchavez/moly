@@ -133,7 +133,6 @@ class Figure():
         self.fig.update_layout(get_layout(self.resolution))
         self.assert_range([min_range, max_range])
 
-
     def add_measurement(self, mol_label, m, 
                         line_width=20,
                         line_color='grey'):
@@ -166,7 +165,7 @@ class Figure():
         elif len(m) == 4:
             print("Unable to add dihedral")
 
-    def add_cubes(self, directory=".", iso=0.03, style="ball_and_stick", colorscale="portland", opacity=0.3):
+    def add_cubes(self, directory=".", iso=0.03, style="ball_and_stick", colorscale="portland", opacity=0.2):
         cubes, details = get_cubes(directory)
         geometry, symbols, atomic_numbers, spacing, origin, _ = cube_to_molecule(details[0]["name"]+".cube")
         bonds = qcel.molutil.guess_connectivity(symbols, geometry)
@@ -212,23 +211,71 @@ class Figure():
 
     #Psi4 Traces
 
-    def add_density(self, name, wfn, iso=0.03, colorscale="portland", opacity=0.3, geometry=True, 
+    def add_density(self, name, wfn, what_density="Dt", iso=0.03, colorscale="portland", opacity=0.2, geometry=True, 
                     spacing=[0.2, 0.2, 0.2], overage=[4.0, 4.0, 4.0]):
 
-        molecule = qcel.models.Molecule.from_data(wfn.basisset().molecule().save_string_xyz())
-        self.add_molecule("name"+"_geometry", molecule)
+        """
+        Adds density from wfn object
+
+        """
+
+        if geometry is True:
+            molecule = qcel.models.Molecule.from_data(wfn.basisset().molecule().save_string_xyz())
+            self.add_molecule("name"+"_geometry", molecule)
 
         D = spacing
         L = overage
 
+        if what_density == "Dt":
+            #Density_a = wfn.Da_subset("AO") 
+            #Density_b = wfn.Db_subset("AO")
+
+            Density = wfn.Da_subset("AO")
+            Density.axpy(1.0, wfn.Db_subset("AO"))
+        
+        if what_density == "Da":
+            Density =  wfn.Da_subset("AO")
+
+        if what_density == "Db":
+            Density = wfn.Db_subset("AO")
+
+        if what_density == "Ds":
+            Density_a = wfn.Da_subset("AO")
+            Density_b = wfn.Db_subset("AO")
+
+
         O, N =  cubeprop.build_grid(wfn, L, D) 
         block, points, nxyz, npoints =  cubeprop.populate_grid(wfn, O, N, D)
-        volume = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, wfn.Da())
+
+        if what_density == "Da" or what_density == "Db":
+            volume = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, [Density], what_density)
+
+        if what_density == "Dt":
+            volume = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, [Density], what_density)
+
         trace, min_range, max_range = get_cube_trace(volume, spacing, O, iso, colorscale, opacity)
 
         self.fig.add_trace(trace)
         self.fig.update_layout(get_layout(self.resolution))
         self.assert_range([min_range, max_range])
+
+    # def add_orbital(self, name, wfn, orbital,
+    #                  iso=0.03, colorscale="portland", opacity=0.3, geometry=True,
+    #                  spacing=[0.2,0.2,0.2], overage=[4.0,4.0,4.0])
+
+    #     molecule = qcel.models.Molecule.from_data(wfn.basisset().molecule().save_string_xyz())
+    #     self.add_molecule("name"+"_geometry", molecule)
+
+    #     D = spacing 
+    #     L = overage
+    #     O, N = cubeprop.build_grid(wfn, L, D)
+
+    #   block, points, nxyz, npoints = cubeprop.populate_grid(wfn, O, N, D)
+    #    volume = cubeprop.compute_orbitals(O, N, D, npoints, points, nxyz, block, wfn.Ca)
+
+
+
+
 
    
 

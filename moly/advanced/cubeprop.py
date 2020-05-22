@@ -35,6 +35,7 @@ import numpy as np
 import psi4
 
 
+
 def build_grid(wfn, L, D):
     """
     Creates origin and extent of the cube file
@@ -188,14 +189,12 @@ def populate_grid(wfn, O, N, D):
 #    return block, points, nxyz, npoints, [x_plot, y_plot, z_plot]
     return block, points, nxyz, npoints
 
-def add_density(npoints, points, block, matrix):
+def add_density(npoints, points, block, matrix, what_density):
     """
     Computes density in new grid
 
-
     Parameters
     ----------
-
     npoints: int
         total number of points
     points : psi4.core.RKSFunctions
@@ -204,17 +203,14 @@ def add_density(npoints, points, block, matrix):
     matrix : psi4.core.Matrix
         One-particle density matrix
 
-
     Returns
     -------
-
     v : numpy array
         Array with density values on the grid
     """
 
     v = np.zeros(int(npoints))
-
-    points.set_pointers(matrix)
+    points.set_pointers(matrix[0])
     rho = points.point_values()["RHO_A"]
 
     offset = 0
@@ -313,24 +309,29 @@ def reorder_array(O, N, D, nxyz, npoints, v):
 
     return v2
 
-def compute_density(O, N, D, npoints, points, nxyz, block, matrix):
+def compute_density(O, N, D, npoints, points, nxyz, block, matrix, what_density):
 
-    v = add_density(npoints, points, block, matrix)
+    # print(type(block))
+    # print(type(points))
+
+    v = add_density(npoints, points, block, matrix, what_density)
     isocontour_range, threshold = compute_isocontour_range(v, npoints)
     density_percent = 100.0 * threshold
     v2 = reorder_array(O, N, D, nxyz, npoints, v)
     v2 = v2.reshape(int(N[0]),int(N[1]),int(N[2]))
 
-    # it = np.nditer(v2, flags=['multi_index'])
-    # x, y, z = [], [], []
-    # while not it.finished:
-    #     if np.isclose(it[0],iso,atol=0.005):
-    #         x.append(it.multi_index[0])
-    #         y.append(it.multi_index[1])
-    #         z.append(it.multi_index[2])
-    #     it.iternext()
-
     return v2
+
+# def compute_orbital(O, N, D, nxyz, block, matrix):
+
+#     v = add_orbital(npoints, points, block, matrix)
+
+
+# def add_orbital(npoints, points, block, matrix):
+
+
+
+
 
 def compute_orbitals(O, N, D,npoints, points, nxyz, block, C, orbitals, iso):
 
@@ -339,40 +340,40 @@ def compute_orbitals(O, N, D,npoints, points, nxyz, block, C, orbitals, iso):
 
     return v
 
-def add_density(npoints, points, block, matrix):
-    """
-    Computes density in new grid
+# def add_density(npoints, points, block, matrix):
+#     """
+#     Computes density in new grid
 
 
-    Parameters
-    ----------
+#     Parameters
+#     ----------
 
-    npoints: int
-        total number of points
-    points : psi4.core.RKSFunctions
-    block : list
-        Set of psi4.core.BlockOPoints for cube grid
-    matrix : psi4.core.Matrix
-        One-particle density matrix
+#     npoints: int
+#         total number of points
+#     points : psi4.core.RKSFunctions
+#     block : list
+#         Set of psi4.core.BlockOPoints for cube grid
+#     matrix : psi4.core.Matrix
+#         One-particle density matrix
 
 
-    Returns
-    -------
+#     Returns
+#     -------
 
-    v : numpy array
-        Array with density values on the grid
-    """
+#     v : numpy array
+#         Array with density values on the grid
+#     """
 
-    v = np.zeros(int(npoints))
+#     v = np.zeros(int(npoints))
 
-    points.set_pointers(matrix)
-    rho = points.point_values()["RHO_A"]
+#     points.set_pointers(matrix)
+#     rho = points.point_values()["RHO_A"]
 
-    offset = 0
-    for i in range(len(block)):
-        points.compute_points(block[i])
-        n_points = block[i].npoints()
-        offset += n_points
-        v[offset-n_points:offset] = 0.5 * rho.np[:n_points]
+#     offset = 0
+#     for i in range(len(block)):
+#         points.compute_points(block[i])
+#         n_points = block[i].npoints()
+#         offset += n_points
+#         v[offset-n_points:offset] = 0.5 * rho.np[:n_points]
 
-    return v
+#     return v
