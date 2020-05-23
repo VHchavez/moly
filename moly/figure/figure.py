@@ -227,9 +227,6 @@ class Figure():
         L = overage
 
         if what_density == "Dt":
-            #Density_a = wfn.Da_subset("AO") 
-            #Density_b = wfn.Db_subset("AO")
-
             Density = wfn.Da_subset("AO")
             Density.axpy(1.0, wfn.Db_subset("AO"))
         
@@ -242,7 +239,6 @@ class Figure():
         if what_density == "Ds":
             Density_a = wfn.Da_subset("AO")
             Density_b = wfn.Db_subset("AO")
-
 
         O, N =  cubeprop.build_grid(wfn, L, D) 
         block, points, nxyz, npoints =  cubeprop.populate_grid(wfn, O, N, D)
@@ -259,20 +255,29 @@ class Figure():
         self.fig.update_layout(get_layout(self.resolution))
         self.assert_range([min_range, max_range])
 
-    # def add_orbital(self, name, wfn, orbital,
-    #                  iso=0.03, colorscale="portland", opacity=0.3, geometry=True,
-    #                  spacing=[0.2,0.2,0.2], overage=[4.0,4.0,4.0])
+    def add_orbital(self, name, wfn, orbital,
+                    iso=0.03, colorscale="portland", opacity=0.3, plot_geometry=True,
+                    spacing=[0.2,0.2,0.2], overage=[4.0,4.0,4.0]):
 
-    #     molecule = qcel.models.Molecule.from_data(wfn.basisset().molecule().save_string_xyz())
-    #     self.add_molecule("name"+"_geometry", molecule)
+        if plot_geometry is True:
+            molecule = qcel.models.Molecule.from_data(wfn.basisset().molecule().save_string_xyz())
+            self.add_molecule("name"+"_geometry", molecule)
 
-    #     D = spacing 
-    #     L = overage
-    #     O, N = cubeprop.build_grid(wfn, L, D)
+        D = spacing 
+        L = overage
+        O, N = cubeprop.build_grid(wfn, L, D)
 
-    #   block, points, nxyz, npoints = cubeprop.populate_grid(wfn, O, N, D)
-    #    volume = cubeprop.compute_orbitals(O, N, D, npoints, points, nxyz, block, wfn.Ca)
+        C = wfn.Ca_subset("AO", "ALL") if orbital > 0 else wfn.Ca_subset("AO", "ALL")
 
+        block, points, nxyz, npoints = cubeprop.populate_grid(wfn, O, N, D)
+        volume = cubeprop.compute_orbital(O, N, D, npoints, points, nxyz, block, C, orbital)
+        trace, min_range, max_range = get_cube_trace(volume, spacing, O, iso, colorscale, opacity)
+
+        self.fig.add_trace(trace)
+        self.fig.update_layout(get_layout(self.resolution))
+        self.assert_range([min_range, max_range])
+
+        return volume
 
 
 

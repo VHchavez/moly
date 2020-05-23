@@ -226,16 +226,18 @@ def add_density(npoints, points, block, matrix, what_density):
 def add_orbital(npoints, block, orbital_array):
 
     v = np.zeros(int(npoints))
-    print(orbital_array.shape)
-
     offset = 0
-    for i in range(len(block)):
-        n_points = block[i].npoints()
-        offset += n_points
-        v[offset-n_points:offset] = 1.0 * orbital_array[:n_points]
+    non_zero_block = 0
+    for b in (block):
+        n_points = b.npoints()
+        if n_points != 0:
+            orbital_block = orbital_array[non_zero_block]
+            n_points = b.npoints()
+            offset += n_points
+            v[offset-n_points:offset] = 1.0 * orbital_block[:n_points]
+            non_zero_block += 1
 
     return v
-
 
 def compute_isocontour_range(v, npoints):
     """
@@ -336,16 +338,18 @@ def compute_density(O, N, D, npoints, points, nxyz, block, matrix, what_density)
 
 def compute_orbital(O, N, D, npoints, points, nxyz, block, C, orbital):
 
-    Ca_on_grid = orbitals_on_grid(C, block, points)
-    
+    C_on_grid = orbitals_on_grid(C, block, points)
 
     fst_orbital = []
-    for i_block in range(len(Ca_on_grid)):
-        for i_point in range(len(Ca_on_grid[i_block])):
-            fst_orbital.append(Ca_on_grid[i_block][0, i_point])
+    for b in C_on_grid:
+        fst_orbital.append(b[orbital])
+    fst_orbital = np.array(fst_orbital)
 
+    v = add_orbital(npoints, block, fst_orbital)
+    isocontour_range, threshold = compute_isocontour_range(v, npoints)
+    density_percent = 100.0 * threshold
+    v2 = reorder_array(O, N, D, nxyz, npoints, v)
+    v2 = v2.reshape(int(N[0]),int(N[1]),int(N[2]))
 
-    v = add_orbital(npoints, block, np.array(fst_orbital))
-
-    return v
+    return v2
 

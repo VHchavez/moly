@@ -72,12 +72,11 @@ def compute_orbital_properties(wfn, orbitals="all"):
     
     return indsa0, indsb0, labelsa, labelsb
 
-def orbitals_on_grid(Ca, blocks, points_func):
-    Ca_on_grid = []
+def orbitals_on_grid(C, blocks, points_func):
+    C_on_grid = []
 
-    points_func.set_pointers(Ca)
-
-    Ca_np = Ca.clone().np
+    points_func.set_pointers(C)
+    C_np = C.clone().np
 
     for block in blocks:
         points_func.compute_points(block)
@@ -86,9 +85,8 @@ def orbitals_on_grid(Ca, blocks, points_func):
         w = np.array(block.w())
         phi = np.array(points_func.basis_values()["PHI"])[:npoints, :lpos.shape[0]]
         if lpos.shape[0] != 0:
+            C_local = C_np[(lpos[:, None], lpos)]
+            orb = contract('nm, pm -> np', C_local.T, phi)
+            C_on_grid.append(orb)
 
-            Ca_local = Ca_np[(lpos[:, None], lpos)]
-            orb_a = contract('nm, pm -> np', Ca_local.T, phi)
-            Ca_on_grid.append(orb_a)
-
-    return Ca_on_grid
+    return C_on_grid
