@@ -3,6 +3,7 @@ Handles functions that require quantities on the grid
 """
 
 import numpy as np 
+from opt_einsum import contract
 
 def compute_orbital_properties(wfn, orbitals="all"):
     """
@@ -59,15 +60,35 @@ def compute_orbital_properties(wfn, orbitals="all"):
 
     ct = wfn.basisset().molecule().point_group().char_table()
 
-    for i in range(len(indsa0)):
+    for j in range(len(indsa0)):
         i = orb_a_info[indsa0[0]][1]
         h = orb_a_info[indsa0[0]][2]
-        labelsa.append(str(i+1)+"-"+ct.gamma(h).symbol())
+        labelsa.append(str(j+1)+"-"+ct.gamma(h).symbol())
 
-    for i in range(len(indsb0)):
+    for j in range(len(indsb0)):
         i = orb_b_info[indsb0[0]][1]
         h = orb_b_info[indsb0[0]][2]
-        labelsb.append(str(i+1)+"-"+ct.gamma(h).symbol())
+        labelsb.append(str(j+1)+"-"+ct.gamma(h).symbol())
     
     return indsa0, indsb0, labelsa, labelsb
-    
+
+def orbitals_on_grid(Ca, blocks, points_func):
+    Ca_on_grid = []
+
+    points_func.set_pointers(Ca)
+
+    Ca_np = Ca.clone().np
+
+    for block in blocks:
+        points_func.compute_points(block)
+        npoints = block.npoints()
+        lpos = np.array(block.functions_local_to_global())
+        w = np.array(block.w())
+        phi = np.array(points_func.basis_values()["PHI"])[:npoints, :lpos.shape[0]]
+        if lpos.shape[0] != 0:
+
+            Ca_local = Ca_np[(lpos[:, None], lpos)]
+            orb_a = contract('nm, pm -> np', Ca_local.T, phi)
+            Ca_on_grid.append(orb_a)
+
+    return Ca_on_grid

@@ -33,6 +33,7 @@
 
 import numpy as np
 import psi4
+from ..psi4.points import orbitals_on_grid
 
 
 
@@ -222,6 +223,20 @@ def add_density(npoints, points, block, matrix, what_density):
 
     return v
 
+def add_orbital(npoints, block, orbital_array):
+
+    v = np.zeros(int(npoints))
+    print(orbital_array.shape)
+
+    offset = 0
+    for i in range(len(block)):
+        n_points = block[i].npoints()
+        offset += n_points
+        v[offset-n_points:offset] = 1.0 * orbital_array[:n_points]
+
+    return v
+
+
 def compute_isocontour_range(v, npoints):
     """
     Computes threshold for isocontour range
@@ -311,9 +326,6 @@ def reorder_array(O, N, D, nxyz, npoints, v):
 
 def compute_density(O, N, D, npoints, points, nxyz, block, matrix, what_density):
 
-    # print(type(block))
-    # print(type(points))
-
     v = add_density(npoints, points, block, matrix, what_density)
     isocontour_range, threshold = compute_isocontour_range(v, npoints)
     density_percent = 100.0 * threshold
@@ -322,58 +334,18 @@ def compute_density(O, N, D, npoints, points, nxyz, block, matrix, what_density)
 
     return v2
 
-# def compute_orbital(O, N, D, nxyz, block, matrix):
+def compute_orbital(O, N, D, npoints, points, nxyz, block, C, orbital):
 
-#     v = add_orbital(npoints, points, block, matrix)
+    Ca_on_grid = orbitals_on_grid(C, block, points)
+    
+
+    fst_orbital = []
+    for i_block in range(len(Ca_on_grid)):
+        for i_point in range(len(Ca_on_grid[i_block])):
+            fst_orbital.append(Ca_on_grid[i_block][0, i_point])
 
 
-# def add_orbital(npoints, points, block, matrix):
-
-
-
-
-
-def compute_orbitals(O, N, D,npoints, points, nxyz, block, C, orbitals, iso):
-
-    v = np.zeros(len(orbitals), npoints)
-    v = add_orbitals(npoints, points, block, v, C) 
+    v = add_orbital(npoints, block, np.array(fst_orbital))
 
     return v
 
-# def add_density(npoints, points, block, matrix):
-#     """
-#     Computes density in new grid
-
-
-#     Parameters
-#     ----------
-
-#     npoints: int
-#         total number of points
-#     points : psi4.core.RKSFunctions
-#     block : list
-#         Set of psi4.core.BlockOPoints for cube grid
-#     matrix : psi4.core.Matrix
-#         One-particle density matrix
-
-
-#     Returns
-#     -------
-
-#     v : numpy array
-#         Array with density values on the grid
-#     """
-
-#     v = np.zeros(int(npoints))
-
-#     points.set_pointers(matrix)
-#     rho = points.point_values()["RHO_A"]
-
-#     offset = 0
-#     for i in range(len(block)):
-#         points.compute_points(block[i])
-#         n_points = block[i].npoints()
-#         offset += n_points
-#         v[offset-n_points:offset] = 0.5 * rho.np[:n_points]
-
-#     return v
