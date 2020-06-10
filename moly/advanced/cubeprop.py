@@ -340,9 +340,14 @@ def compute_orbital(O, N, D, npoints, points, nxyz, block, C, orbital):
 
     C_on_grid = orbitals_on_grid(C, block, points)
 
+    # fst_orbital = []
+    # for b in C_on_grid:
+    #     fst_orbital.append(b[orbital])
+    # fst_orbital = np.array(fst_orbital)
+
     fst_orbital = []
-    for b in C_on_grid:
-        fst_orbital.append(b[orbital])
+    for b in C_on_grid[str(orbital)]:
+        fst_orbital.append(b)
     fst_orbital = np.array(fst_orbital)
 
     v = add_orbital(npoints, block, fst_orbital)

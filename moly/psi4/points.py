@@ -77,6 +77,9 @@ def orbitals_on_grid(C, blocks, points_func):
 
     points_func.set_pointers(C)
     C_np = C.clone().np
+    nbf = len(C_np)
+
+    orbitals_r = {str(i_orb) : [] for i_orb in range(nbf)}
 
     for block in blocks:
         points_func.compute_points(block)
@@ -84,9 +87,18 @@ def orbitals_on_grid(C, blocks, points_func):
         lpos = np.array(block.functions_local_to_global())
         w = np.array(block.w())
         phi = np.array(points_func.basis_values()["PHI"])[:npoints, :lpos.shape[0]]
-        if lpos.shape[0] != 0:
-            C_local = C_np[(lpos[:, None], lpos)]
-            orb = contract('nm, pm -> np', C_local.T, phi)
-            C_on_grid.append(orb)
 
-    return C_on_grid
+        for i_orb in range(nbf):
+            if len(lpos) != 0:
+                #C_local = C_np[i_orb, lpos]
+                C_local = C_np[lpos, i_orb]
+                orb = contract('m, pm -> p', C_local, phi)
+                #C_on_grid.append(orb)
+                orbitals_r[str(i_orb)].append(orb)        
+
+        # if lpos.shape[0] != 0:
+        #     C_local = C_np[(lpos[:, None], lpos)]
+        #     orb = contract('nm, pm -> np', C_local.T, phi)
+        #     C_on_grid.append(orb)
+
+    return orbitals_r
