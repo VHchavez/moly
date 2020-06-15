@@ -18,5 +18,5 @@ dependencies:
 
     # Pip-only installs
   - pip:
-    - opt_einsum
+    - opt-einsum
 
