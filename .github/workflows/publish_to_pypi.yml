@@ -6,9 +6,9 @@ jobs:
   build:
 
     runs-on: ubuntu-18.04
-    strategy: 
+    strategy:
       matrix:
-      cfg:
+        cfg:
         - conda-env: base
           python-version: 3.8
 
