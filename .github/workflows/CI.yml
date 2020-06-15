@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         cfg:
-        - conda-env: base
+        - conda-env: test_env
           python-version: 3.8
 
     env: 
