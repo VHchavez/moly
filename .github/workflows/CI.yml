@@ -1,4 +1,4 @@
-name: publish moly to pypi
+name: CI
 
 on: [push, pull_request]
 
@@ -10,7 +10,7 @@ jobs:
       matrix:
         cfg:
         - conda-env: test_env
-          python-version: 3.8
+          python-version: 3.7
 
     env: 
       PYVER: ${{ matrix.cfg.python-version }}
