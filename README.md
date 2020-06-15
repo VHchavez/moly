@@ -85,3 +85,5 @@ Copyright (c) 2020, VH Chavez
 ##### Acknowledgements
 Project based on the 
 [Computational Molecular Science Python Cookiecutter](https://github.com/molssi/cookiecutter-cms) version 1.1.
+Victor H. Chavez was supported by a fellowship from The Molecular Sciences Software Institute under NSF grant OAC-1547580.  
+
