@@ -93,7 +93,6 @@ def orbitals_on_grid(C, blocks, points_func):
                 #C_local = C_np[i_orb, lpos]
                 C_local = C_np[lpos, i_orb]
                 orb = contract('m, pm -> p', C_local, phi)
-                #C_on_grid.append(orb)
                 orbitals_r[str(i_orb)].append(orb)        
 
         # if lpos.shape[0] != 0:
