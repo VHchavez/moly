@@ -53,12 +53,7 @@ jobs:
     - name: CodeCov  
       uses: codecov/codecov-action@v1
 
-  publish:
-    name: Publish to Pipy
-    runs-on: ubuntu:18.04
-    steps:
-    - uses: actions/checkout@master
-    - name: Publish distribution to PyPI
+    - name: Publish to Pipy
       uses: pypa/gh-action-pypi-publish@master
       with:
         password: ${{ secrets.pypi_password }}
