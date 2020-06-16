@@ -2,7 +2,6 @@
 <br>
 <img src="media/title.png" alt="moly" height=300> <br><br>
 Molecular visualization in Jupyter.<br><br>
-
 <a href="https://github.com/vhchavez/moly/actions?query=workflow%3ACI"><img src="https://github.com/vhchavez/moly/workflows/CI/badge.svg?branch=master" /></a>      
 <a href="https://lgtm.com/projects/g/VHchavez/moly/context:python"><img src="https://img.shields.io/lgtm/grade/python/g/VHchavez/moly.svg?logo=lgtm&logoWidth=18" /></a>  
 <a href="https://opensource.org/licenses/BSD-3-Clause"><img src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" /></a>
