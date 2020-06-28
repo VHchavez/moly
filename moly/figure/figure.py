@@ -6,10 +6,11 @@ Creates main figure
 import numpy as np
 import qcelemental as qcel
 import plotly.graph_objects as go
+from qcelemental.models import Molecule as qcel_mol
 
 from ..layers.bonds import get_bonds
 from ..layers.geometry import get_atoms
-# from ..layers.measurements import get_angle, get_line
+from ..layers.measurements import get_angle, get_line
 from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cube_trace, get_cubes_surfaces
 from .layouts import get_layout, get_range
 from .widgets import get_buttons, get_buttons_wfn, get_slider
@@ -207,6 +208,13 @@ class Figure():
         #Update layout
         self.fig.update_layout(get_layout(self.resolution))
         self.assert_range([min(min_list), max(max_list)])
+    
+    def add_trace(self, trace):
+        """
+        Maps directly to plotly's figure add trace
+        """
+
+        self.fig.add_trace(trace)
 
 
     #Psi4 Traces
@@ -301,6 +309,100 @@ class Figure():
         self.assert_range([min_range, max_range])
 
         return volume
+
+    def add_frequency(self,
+                      name, 
+                      wfn, 
+                      frequency, 
+                      nframes = 3, 
+                      style="wireframe"):
+
+        #NORMAL FREQUENCIES INDICES:
+        vib_indices = []
+        for i, j in enumerate(wfn.frequency_analysis["TRV"].dict()["data"]):
+            if j == "V":
+                vib_indices.append(i)
+
+        #FREQUENCIES:
+        freq = wfn.frequency_analysis["omega"].dict()["data"][vib_indices]
+
+        #NORMAL COORDINATES
+        molecule = qcel_mol.from_data(wfn.molecule().save_string_xyz())
+        geometry = molecule.geometry
+        normal_coords = wfn.frequency_analysis['x'].dict()["data"][:,vib_indices].T.reshape(len(vib_indices),len(geometry),3)
+
+        #NEW COORDINTES
+        normal_geometries = []
+        normal_geometries.append(geometry)
+        for i_normal in normal_coords:
+            normal_geometries.append(geometry + i_normal)
+
+        #ORIGINAL GEOMETRY
+            bonds = self.get_connectivity(molecule)
+            bond_list = get_bonds(molecule.geometry, molecule.symbols, bonds, style, self.surface)
+            atom_list = get_atoms(molecule.geometry, molecule.atomic_numbers, molecule.symbols, style, self.surface)
+
+            for bond in bond_list:
+                self.fig.add_trace(bond)
+            for atom in atom_list:
+                self.fig.add_trace(atom)
+
+        #GENERATION OF FRAMES
+        movie_frames = []        
+        for i_frame in range(nframes):
+
+            frame_data = []
+            geometry_step = geometry + normal_coords[frequency]/(nframes - i_frame)
+
+            bonds = self.get_connectivity(molecule)
+            bond_list = get_bonds(geometry_step, molecule.symbols, bonds, style, self.surface)
+            atom_list = get_atoms(geometry_step, molecule.atomic_numbers, molecule.symbols, style, self.surface)
+            
+            for bond in bond_list:
+                #self.fig.add_trace(bond)
+                frame_data.append(bond)
+
+            for atom in atom_list:
+                #self.fig.add_trace(atom)
+                frame_data.append(atom)
+
+            movie_frames.append(go.Frame(data=frame_data))
+
+        #MAKE SURE ANIMATION IS CONTINIOUS
+        movie_frames.reverse()
+        movie_frames_inv = movie_frames.copy()
+        movie_frames.reverse()
+
+        #BUTTONS LAYOUT FOR ANIMATION
+        #self.fig.add_trace(frame_data[0])
+
+
+        self.fig.layout.update(
+        #title=F"Frequency: {wfn.frequencies[frequency].real:.2f} 1/cm",
+        updatemenus=[dict(
+            type="buttons",
+            buttons=[dict(  label="Play",
+                            method="animate",
+                            args=[None,
+                                 {"frame": {"duration": 1, "redraw": True}}]),
+
+                    dict (   label="Stop", 
+                             method="animate", 
+                             args=[[None],
+                                   {"frame": {"duration": 1, "redraw": True}, 
+                                    "mode" : "immediate", 
+                                    "transition" : {"duration" :0}}])
+                    ])])
+
+                    
+        self.fig.frames =  movie_frames + movie_frames_inv + movie_frames + movie_frames_inv
+
+        return movie_frames + movie_frames_inv + movie_frames + movie_frames_inv
+
+        #Update layout
+        self.fig.update_layout(get_layout(self.resolution))
+        self.assert_range(molecule.geometry)
+
 
 
 
