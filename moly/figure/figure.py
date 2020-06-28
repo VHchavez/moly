@@ -15,6 +15,10 @@ from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cube_trace
 from .layouts import get_layout, get_range
 from .widgets import get_buttons, get_buttons_wfn, get_slider
 
+from ..molecule.shapes import rotation_matrix
+from ..molecule.shapes import get_single_cylinder
+from ..layers.bonds import get_bond_mesh
+
 from ..advanced import cubeprop
 
 
@@ -310,6 +314,55 @@ class Figure():
 
         return volume
 
+    def add_dipole(self, 
+                   wfn,
+                   style = "ball_and_stick",
+                   geometry = True):
+
+        if geometry is True:
+            molecule = qcel.models.Molecule.from_data(wfn.basisset().molecule().save_string_xyz())
+            self.add_molecule("name"+"_geometry", molecule, style)
+
+
+        r=0.08
+    
+        vec1 = np.array([0.1,0,0])
+        vec2 = np.array([wfn.variables()["CURRENT DIPOLE X"],
+                        wfn.variables()["CURRENT DIPOLE Y"],
+                        wfn.variables()["CURRENT DIPOLE Z"]])
+
+        length = np.linalg.norm(vec2 - vec1)
+        R = rotation_matrix(np.array([0, 0, 1]), vec2 - vec1)
+
+        cyl = get_single_cylinder(radius=r)
+        cyl[:, 2] *= length
+        cyl = R.dot(cyl.T).T
+        cyl += vec1
+
+
+        cylinder = get_bond_mesh(cyl, 0, ["H"], "matte")
+        cylinder.color = "rgba(204, 0.0, 0.0, 1.0)"
+
+        # line = go.Scatter3d(x=[0, wfn.variables()["CURRENT DIPOLE X"]],
+        #                     y=[0, wfn.variables()["CURRENT DIPOLE Y"]],
+        #                     z=[0, wfn.variables()["CURRENT DIPOLE Z"]])
+
+        cone_norm = np.linalg.norm([wfn.variables()["CURRENT DIPOLE X"], 
+                                    wfn.variables()["CURRENT DIPOLE Y"],
+                                    wfn.variables()["CURRENT DIPOLE Z"]])
+
+        cone = go.Cone(x=[wfn.variables()["CURRENT DIPOLE X"]],
+                    y=[wfn.variables()["CURRENT DIPOLE Y"]],
+                    z=[wfn.variables()["CURRENT DIPOLE Z"]], 
+                    u=[wfn.variables()["CURRENT DIPOLE X"]], 
+                    v=[wfn.variables()["CURRENT DIPOLE Y"]], 
+                    w=[wfn.variables()["CURRENT DIPOLE Z"]],
+                    colorscale="reds", 
+                    showscale=False)
+
+        self.fig.add_trace(cylinder)
+        self.fig.add_trace(cone)
+
     def add_frequency(self,
                       name, 
                       wfn, 
@@ -402,17 +455,4 @@ class Figure():
         #Update layout
         self.fig.update_layout(get_layout(self.resolution))
         self.assert_range(molecule.geometry)
-
-
-
-
-
-   
-
-
-
-
-
-
-
 
