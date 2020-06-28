@@ -10,7 +10,7 @@ import plotly.graph_objects as go
 from ..layers.bonds import get_bonds
 from ..layers.geometry import get_atoms
 # from ..layers.measurements import get_angle, get_line
-from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cube_trace
+from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cube_trace, get_cubes_surfaces
 from .layouts import get_layout, get_range
 from .widgets import get_buttons, get_buttons_wfn, get_slider
 
@@ -211,8 +211,18 @@ class Figure():
 
     #Psi4 Traces
 
-    def add_density(self, name, wfn, what_density="Dt", iso=0.03, colorscale="portland", opacity=0.2, geometry=True, 
-                    spacing=[0.2, 0.2, 0.2], overage=[4.0, 4.0, 4.0]):
+    def add_density(self, name, 
+                    wfn, 
+                    what_density="Dt", 
+                    iso=0.08, 
+                    colorscale="blues", 
+                    opacity=0.2, 
+                    geometry=True, 
+                    alpha=0.0,
+                    atol=5e-4,
+                    style="ball_and_stick",
+                    spacing=[0.2, 0.2, 0.2], 
+                    overage=[3.0, 3.0, 3.0]):
 
         """
         Adds density from wfn object
@@ -221,7 +231,7 @@ class Figure():
 
         if geometry is True:
             molecule = qcel.models.Molecule.from_data(wfn.basisset().molecule().save_string_xyz())
-            self.add_molecule("name"+"_geometry", molecule)
+            self.add_molecule("name"+"_geometry", molecule, style)
 
         D = spacing
         L = overage
@@ -250,18 +260,29 @@ class Figure():
             volume = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, [Density], what_density)
 
         trace, min_range, max_range = get_cube_trace(volume, spacing, O, iso, colorscale, opacity)
+        #trace, min_range, max_range = get_cubes_surfaces([volume], spacing, O, iso, colorscale, opacity, alpha, atol)
 
         self.fig.add_trace(trace)
         self.fig.update_layout(get_layout(self.resolution))
         self.assert_range([min_range, max_range])
 
-    def add_orbital(self, name, wfn, orbital,
-                    iso=0.03, colorscale="portland", opacity=0.3, plot_geometry=True,
-                    spacing=[0.2,0.2,0.2], overage=[4.0,4.0,4.0]):
+    def add_orbital(self, 
+                    name, 
+                    wfn, 
+                    orbital,
+                    iso=0.08, 
+                    colorscale="portland", 
+                    opacity=0.3, 
+                    alpha=0.0,
+                    atol=5e-4,
+                    style="ball_and_stick",
+                    plot_geometry=True,
+                    spacing=[0.2,0.2,0.2], 
+                    overage=[3.0,3.0,3.0]):
 
         if plot_geometry is True:
             molecule = qcel.models.Molecule.from_data(wfn.basisset().molecule().save_string_xyz())
-            self.add_molecule("name"+"_geometry", molecule)
+            self.add_molecule("name"+"_geometry", molecule, style)
 
         D = spacing 
         L = overage
@@ -272,6 +293,8 @@ class Figure():
         block, points, nxyz, npoints = cubeprop.populate_grid(wfn, O, N, D)
         volume = cubeprop.compute_orbital(O, N, D, npoints, points, nxyz, block, C, orbital)
         trace, min_range, max_range = get_cube_trace(volume, spacing, O, iso, colorscale, opacity)
+        #trace_pos, min_range, max_range = get_cubes_surfaces([volume], spacing, O, iso, colorscale, opacity, alpha, atol)
+        #trace_neg, min_range, max_range = get_cubes_surfaces([volume], spacing, O, -iso, colorscale, opacity, alpha, atol)
 
         self.fig.add_trace(trace)
         self.fig.update_layout(get_layout(self.resolution))
