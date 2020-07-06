@@ -271,12 +271,21 @@ class Figure():
         if what_density == "Dt":
             volume = cubeprop.compute_density(O, N, D, npoints, points, nxyz, block, [Density], what_density)
 
-        trace, min_range, max_range = get_cube_trace(volume, spacing, O, iso, colorscale, opacity)
+        #trace, min_range, max_range = get_cube_trace(volume, spacing, O, iso, colorscale, opacity)
         #trace, min_range, max_range = get_cubes_surfaces([volume], spacing, O, iso, colorscale, opacity, alpha, atol)
+
+        x, y, z = np.mgrid[:volume.shape[0], :volume.shape[1], :volume.shape[2]]
+        x_r = x * spacing[0] + O[0]
+        y_r = y * spacing[1] + O[1]
+        z_r = z * spacing[2] + O[2]
+
+        trace = go.Scatter3d(x=x_r, 
+                             y=y_r,
+                             z=z_r)
 
         self.fig.add_trace(trace)
         self.fig.update_layout(get_layout(self.resolution))
-        self.assert_range([min_range, max_range])
+        #self.assert_range([min_range, max_range])
 
     def add_orbital(self, 
                     name, 
@@ -310,7 +319,7 @@ class Figure():
 
         self.fig.add_trace(trace)
         self.fig.update_layout(get_layout(self.resolution))
-        self.assert_range([min_range, max_range])
+        #self.assert_range([min_range, max_range])
 
         return volume
 
