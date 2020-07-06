@@ -11,9 +11,9 @@ from qcelemental.models import Molecule as qcel_mol
 from ..layers.bonds import get_bonds
 from ..layers.geometry import get_atoms
 from ..layers.measurements import get_angle, get_line
-from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cube_trace, get_cubes_surfaces
+from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cube_trace
 from .layouts import get_layout, get_range
-from .widgets import get_buttons, get_buttons_wfn, get_slider
+from .widgets import get_buttons, get_slider
 
 from ..molecule.shapes import rotation_matrix
 from ..molecule.shapes import get_single_cylinder
@@ -126,7 +126,7 @@ class Figure():
             for i, iso_i in enumerate(iso):
                 if i == 0:
                     trace, min_range, max_range = get_cube_trace(cube, spacing, origin, iso_i, colorscale, opacity, visible=True)
-                elif i != 0:
+                else:
                     trace, min_range, max_range = get_cube_trace(cube, spacing, origin, iso_i, colorscale, opacity, visible=False)
                 
                 self.fig.add_trace(trace)
@@ -261,6 +261,7 @@ class Figure():
         if what_density == "Ds":
             Density_a = wfn.Da_subset("AO")
             Density_b = wfn.Db_subset("AO")
+            Density = Density_a - Density_b
 
         O, N =  cubeprop.build_grid(wfn, L, D) 
         block, points, nxyz, npoints =  cubeprop.populate_grid(wfn, O, N, D)
@@ -356,9 +357,9 @@ class Figure():
         #                     y=[0, wfn.variables()["CURRENT DIPOLE Y"]],
         #                     z=[0, wfn.variables()["CURRENT DIPOLE Z"]])
 
-        cone_norm = np.linalg.norm([wfn.variables()["CURRENT DIPOLE X"], 
-                                    wfn.variables()["CURRENT DIPOLE Y"],
-                                    wfn.variables()["CURRENT DIPOLE Z"]])
+        # cone_norm = np.linalg.norm([wfn.variables()["CURRENT DIPOLE X"], 
+        #                             wfn.variables()["CURRENT DIPOLE Y"],
+        #                             wfn.variables()["CURRENT DIPOLE Z"]])
 
         cone = go.Cone(x=[wfn.variables()["CURRENT DIPOLE X"]],
                     y=[wfn.variables()["CURRENT DIPOLE Y"]],

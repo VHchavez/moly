@@ -32,13 +32,13 @@ def get_atoms(geometry, atomic_numbers, symbols, style, surface):
     sphere = np.array(get_sphere())
 
     for atom, xyz in enumerate(geometry):
-        if style is "ball_and_stick":
+        if style == "ball_and_stick":
             reshaped_sphere = sphere * (atomic_numbers[atom]/30 + 0.6)
-        elif style is "tubes":
+        elif style == "tubes":
             reshaped_sphere = sphere * 0.3
-        elif style is "spacefilling":
+        elif style == "spacefilling":
             reshaped_sphere = sphere * (atomic_numbers[atom]/20 + 1.5)
-        elif style is "wireframe":
+        elif style == "wireframe":
             reshaped_sphere = sphere * 0.06
         else:
             raise ValueError("Only avaliable styles are \"ball_and_stick\", \"tubes\", \"spacefilling\" and \"wireframe\" ")

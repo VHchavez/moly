@@ -73,7 +73,7 @@ def compute_orbital_properties(wfn, orbitals="all"):
     return indsa0, indsb0, labelsa, labelsb
 
 def orbitals_on_grid(C, blocks, points_func):
-    C_on_grid = []
+    #C_on_grid = []
 
     points_func.set_pointers(C)
     C_np = C.clone().np
