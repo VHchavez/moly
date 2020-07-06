@@ -10,7 +10,7 @@ from qcelemental.models import Molecule as qcel_mol
 
 from ..layers.bonds import get_bonds
 from ..layers.geometry import get_atoms
-from ..layers.measurements import get_angle, get_line
+#from ..layers.measurements import get_angle, get_line
 from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cube_trace
 from .layouts import get_layout, get_range
 from .widgets import get_buttons, get_slider
