@@ -1,7 +1,7 @@
 import numpy as np
 import plotly.graph_objects as go
 
-from ..figure.colors import *
+from ..figure.colors import colors
 from ..figure.layouts import *
 from ..molecule.shapes import get_sphere
 
@@ -28,6 +28,27 @@ def get_sphere_mesh(sphere, sym, xyz, surface):
 
 
 def get_atoms(geometry, atomic_numbers, symbols, style, surface):
+    """
+    Obtain sphere mesh for each atom based on the style
+
+    Parameters
+    ----------
+    geometry: numpy arrays
+        Geometry of structure
+    atomic_numbers: List
+        List of atomic numbers
+    symbols: List
+        List of atomic symbols
+    style: str
+        Style of structure: {ball_and_stick, tubes, spacefiling, wireframe}
+    surface: dict
+        Specification of style for surface
+
+    Returns
+    -------
+    trace_list = List
+        List with plotly graph objects of atomic species
+    """
     trace_list = []
     sphere = np.array(get_sphere())
 
@@ -37,7 +58,9 @@ def get_atoms(geometry, atomic_numbers, symbols, style, surface):
         elif style is "tubes":
             reshaped_sphere = sphere * 0.3
         elif style is "spacefilling":
-            reshaped_sphere = sphere * (atomic_numbers[atom]/20 + 1.5)
+            print("I love space filling")
+            #Uses van der waals radii
+            reshaped_sphere = sphere * (colors[symbols[atom]][2])
         elif style is "wireframe":
             reshaped_sphere = sphere * 0.06
         else:
