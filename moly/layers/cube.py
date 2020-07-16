@@ -24,14 +24,25 @@ def get_volume(cube, spacing, origin, iso, opacity, color):
                         isomax= 1 * iso,
                         opacity = opacity)
 
-    return mesh
 
+    max_range_x = np.max(x_r)
+    max_range_y = np.max(y_r)
+    max_range_z = np.max(z_r)
+    min_range_x = np.min(x_r)
+    min_range_y = np.min(y_r)
+    min_range_z = np.min(z_r)
+    max_range = max(max_range_x, max_range_y, max_range_z)
+    min_range = min(min_range_x, min_range_y, min_range_z)
+
+    return mesh, min_range, max_range
 
 def get_surface(grid, spacing, origin):
 
     x = np.array(grid[0])
     y = np.array(grid[1])
     z = np.array(grid[2])
+
+
     x = x * spacing + origin[0]
     y = y * spacing + origin[1]
     z = z * spacing + origin[2]
@@ -66,15 +77,25 @@ def get_cubes(folder):
         
     return cubes, meta
 
-def get_cubes_surfaces(cubes, spacing, origin, iso, colorscale, opacity):
+def get_cubes_surfaces(cubes, spacing, origin, iso, colorscale, opacity, alpha, atol):
+    """
+    Warning: Surfaces are only functional for self-contained blobs. Multiple blobs that 
+    Exists in space will be merged into a massive undesired blob. 
+    """
+
     cubes_surfaces = []
     traces = []
+
+    if iso > 0.0:
+        color = 'mediumturquoise'
+    else:
+        color = 'red'
 
     for cube in cubes:
         it = np.nditer(cube, flags=['multi_index'])
         x, y, z = [], [], []
         while not it.finished:
-            if np.isclose(it[0],iso,atol=0.005):
+            if np.isclose(it[0],iso,atol=atol):
                 x.append(it.multi_index[0])
                 y.append(it.multi_index[1])
                 z.append(it.multi_index[2])
@@ -82,10 +103,6 @@ def get_cubes_surfaces(cubes, spacing, origin, iso, colorscale, opacity):
         cubes_surfaces.append([x,y,z])
     
     for surface in cubes_surfaces:
-
-        print(spacing)
-        print(spacing[0])
-
 
         x = np.array(surface[0])
         y = np.array(surface[1])
@@ -98,20 +115,29 @@ def get_cubes_surfaces(cubes, spacing, origin, iso, colorscale, opacity):
                 'x': x, 
                 'y': y, 
                 'z': z, 
-                'alphahull': 1,
-                'color'    : 'turquoise',
-                'opacity' : 0.20,
-                'visible' : False,
+                'alphahull': alpha,
+                'color'    : color,
+                'opacity' : opacity,
+                'visible' : True,
                 'flatshading' : False,
                 "lighting" : surface_materials["glass"],
                 "lightposition" : {"x":100,
                                     "y":200,
-                                        "z":0}
+                                    "z":0}
         })
 
         traces.append(mesh)
 
-    return traces   
+    max_range_x = np.max(x)
+    max_range_y = np.max(y)
+    max_range_z = np.max(z)
+    min_range_x = np.min(x)
+    min_range_y = np.min(y)
+    min_range_z = np.min(z)
+    max_range = max(max_range_x, max_range_y, max_range_z)
+    min_range = min(min_range_x, min_range_y, min_range_z)
+
+    return traces[0], min_range, max_range
 
 def get_cube_trace(cube, spacing, origin, iso, colorscale, opacity, visible=True):
     x,y,z = np.mgrid[:cube.shape[0], :cube.shape[1], :cube.shape[2]]
