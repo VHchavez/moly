@@ -38,7 +38,7 @@ def get_bonds(geometry, symbols, bonds, style, surface):
         length = np.linalg.norm(vec2 - vec1)
         R = rotation_matrix(np.array([0, 0, 1]), vec2 - vec1)
 
-        if style is "ball_and_stick" or style is "tubes":
+        if style is "ball_and_stick" or style == "tubes":
             r = 0.3
         elif style is "wireframe":
             r = 0.06

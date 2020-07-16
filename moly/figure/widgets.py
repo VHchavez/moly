@@ -1,4 +1,3 @@
-import numpy as np 
 
 def get_buttons(meta, geo_traces, folder):
     buttons =  []
