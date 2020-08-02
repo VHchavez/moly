@@ -1,7 +1,5 @@
 <p align="center">
-<br>
-<img src="media/moly_wordmark_v1_tagline.png" alt="moly" height=400> <br><br>
-    
+<img src="media/moly_wordmark_v1_tagline.png" alt="moly" height=380> <br><br>
     
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/VHchavez/moly/CI?color=Teal&style=flat-square)
 ![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/VHchavez/moly?color=pink&style=flat-square)
@@ -9,9 +7,6 @@
 
 
 ***
-
-<br>
-
 
 Try it now: 
 <a href="https://mybinder.org/v2/gh/vhchavez/molyexamples/master?filepath=basic_examples%2FBasic_Example.ipynb" target="_blank">
