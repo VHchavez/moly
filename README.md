@@ -1,6 +1,6 @@
 <p align="center">
 <br>
-<img src="media/moly_wordmark_v1_tagline.png" alt="moly" height=300> <br><br>
+<img src="media/moly_wordmark_v1_tagline.png" alt="moly" height=400> <br><br>
     
     
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/VHchavez/moly/CI?color=Teal&style=flat-square)
