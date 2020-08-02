@@ -1,9 +1,9 @@
 <p align="center">
 <img src="media/moly_wordmark_v1_tagline.png" alt="moly" height=380> <br><br>
     
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/VHchavez/moly/CI?color=teal&style=flat-square)
-![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/VHchavez/moly?color=pink&style=flat-square)
-![GitHub](https://img.shields.io/github/license/vhchavez/moly?color=purple&style=flat-square)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/VHchavez/moly/CI?color=purple&style=flat-square)
+![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/VHchavez/moly?color=teal&style=flat-square)
+![GitHub](https://img.shields.io/github/license/vhchavez/moly?color=pink&style=flat-square)
 
 
 ***
