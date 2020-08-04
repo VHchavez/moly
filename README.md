@@ -1,5 +1,5 @@
 <p align="center">
-<img src="media/moly_wordmark_v5_tagline.png" alt="moly" height=300> <br><br>
+<img src="media/moly_wordmark_v5_tagline.png" alt="moly" height=250> <br><br>
     
 <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/vhchavez/moly/CI?color=3a6f7f&style=flat-square">
 <img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/python/github/VHchavez/moly?color=540066&style=flat-square">
