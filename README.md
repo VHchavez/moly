@@ -1,6 +1,10 @@
 <p align="center">
 <img src="media/moly_wordmark_v5_tagline.jpg" alt="moly" height=380> <br><br>
     
+<img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/vhchavez/moly/CI?color=3a6f7f&style=flat-square">
+<img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/python/github/VHchavez/moly?color=540066&style=flat-square">
+<img alt="GitHub" src="https://img.shields.io/github/license/vhchavez/moly?color=d5bbc8&style=flat-square">
+    
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/VHchavez/moly/CI?color=purple&style=flat-square)
 ![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/VHchavez/moly?color=teal&style=flat-square)
 ![GitHub](https://img.shields.io/github/license/vhchavez/moly?color=pink&style=flat-square)
