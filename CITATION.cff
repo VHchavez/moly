@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Chávez"
+  given-names: "Victor H."
+  orcid: "https://orcid.org/0000-0003-3765-2961"
+title: "My Research Software"
+version: 0.1.1
+date-released: 2018-02-18
+url: "https://github.com/VHchavez/moly"
