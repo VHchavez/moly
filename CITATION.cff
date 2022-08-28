@@ -4,7 +4,7 @@ authors:
 - family-names: "Chávez"
   given-names: "Victor H."
   orcid: "https://orcid.org/0000-0003-3765-2961"
-title: "My Research Software"
+title: "moly: Molecular Visualization in Jupyter"
 version: 0.1.1
 date-released: 2018-02-18
 url: "https://github.com/VHchavez/moly"
